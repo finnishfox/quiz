@@ -1,0 +1,27 @@
+@import "./../../variables.scss";
+
+.progress {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+  right: 0;
+  left: 0;
+  position: absolute;
+  bottom: 55px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__circle {
+    transform: rotate(-90deg);
+  }
+
+  &__value {
+    font-family: $open-sans;
+    font-weight: bold;
+    font-size: 40px;
+    color: $dark-blue;
+    position: absolute;
+
+  }
+}

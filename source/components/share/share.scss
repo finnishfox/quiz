@@ -1,0 +1,26 @@
+@import "./../../variables.scss";
+
+.share {
+  position: relative;
+  bottom: -265px;
+  display: inline-block;
+
+  &__title {
+    font-family: $open-sans;
+    font-size: 20px;
+    color: $ice;
+    letter-spacing: 0;
+    margin-bottom: 15px;
+  }
+
+  &__icons{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__icon {
+    color: $ice;
+    font-size: 36px;
+
+  }
+}

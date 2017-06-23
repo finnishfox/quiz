@@ -1,10 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Quizes from "../quizes/Quizes";
 
 class App extends React.Component {
   render() {
     return (
-      <h1 className="app__title">Quizes</h1>
+      <div>
+        <h1 className="app__title">Quizes</h1>
+        <Quizes/>
+      </div>
     );
   }
 }
