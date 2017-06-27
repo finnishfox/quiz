@@ -1,12 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Quizes from "../quizes/Quizes";
+import { Link } from 'react-router';
+
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+
   render() {
     return (
       <div>
-        <h1 className="app__title">Quizes</h1>
         <Quizes/>
       </div>
     );

@@ -1,9 +1,18 @@
+@import "./../../variables.scss";
+
 .quizes {
   margin: 0 40px;
   display: grid;
   grid-gap: 40px;
   grid-template-columns: repeat(auto-fill, 320px);
   //justify-content: center;
+
+  &__title {
+    font-family: $open-sans;
+    color: $dark-blue;
+    font-size: 64px;
+    margin:40px;
+  }
 }
 
 @media screen and (max-width: 320px){

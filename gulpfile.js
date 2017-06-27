@@ -10,7 +10,7 @@ const glob = require('glob');
 
 
 gulp.task('sass-to-css', () => gulp.src('source/components/**/*.scss').pipe(sass()).pipe(concatCss('bundle.css'))
-  .pipe(gulp.dest('source/css')));
+  .pipe(gulp.dest('./dest/css')));
 
 // gulp.task('concat-js', () => {
 //   return gulp.src('source/components/**/*.js')
@@ -19,13 +19,13 @@ gulp.task('sass-to-css', () => gulp.src('source/components/**/*.scss').pipe(sass
 // });
 
 gulp.task('build-js', function () {
-  const files = glob.sync('./source/components/**/*.js');
+  const files = glob.sync('./source/**/**/*.js');
 
   return browserify({entries: files, extensions: ['.js']})
     .transform('babelify', {presets: ['es2015', 'react']})
     .bundle()
     .pipe(source('bundle.js'))
-    .pipe(gulp.dest('./source/js'));
+    .pipe(gulp.dest('./dest/js'));
 });
 
 
@@ -33,4 +33,4 @@ gulp.task('default', () => {
   runSequence('sass-to-css','build-js');
 });
 
-gulp.watch('source/components/**/*.*', ['default']);
+gulp.watch('source/**/**/*.*', ['default']);
