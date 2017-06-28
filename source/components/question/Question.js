@@ -16,23 +16,20 @@ class Question extends React.Component {
     this.getQuestionTitle = this.getQuestionTitle.bind(this);
 
 
+
     this.state = {isSubmitted: false};
 
-    this.q = {
-      "question": `<p>FUCK You perform the following operation in the shell:</p>
-    <pre><code>db.foo.insert( { } );</code></pre>
-    <p>What gets inserted?</p>`,
-      "answers": [
-        "An empty document",
-        "A document with an _id assigned to be an ObjectId",
-        "A document that matches the collection's existing schema, but with null fields",
-        "No document will be inserted; an error will be raised",
-        "A document will be inserted with the same _id as the last document inserted"
-      ],
-      "correctAnswerIndex": "1"
-    };
+
     this.quizId = 0;
     this.questionId = 0;
+  }
+
+  componentDidMount(){
+    Prism.highlightAll();
+  }
+
+  componentDidUpdate(){
+    Prism.highlightAll();
   }
 
   findQuizById(id) {
@@ -72,9 +69,12 @@ class Question extends React.Component {
 
 
   render() {
+
+
     let quiz = this.findQuizById(this.quizId);
 
     let question = this.findQuestionById(this.questionId);
+
 
 
     let button = null;
@@ -85,12 +85,12 @@ class Question extends React.Component {
     }
 
     return (
-      <div className="question language-javascript">
+      <div className="question">
         <img className="quiz__icon" src={'images/' + this.getQuizIcon(quiz)} alt="quiz icon"/>
         <h2 className="quiz__title">{this.getQuizTitle(quiz)}</h2>
-        <p className="quiz__questions-count">Question {this.questionId}/{this.getQuestionCount(quiz)}</p>
+        <p className="quiz__questions-count">Question {this.questionId + 1}/{this.getQuestionCount(quiz)}</p>
 
-        <div className="question__title" dangerouslySetInnerHTML={{__html: this.getQuestionTitle(question)}}/>
+        <div className="question__title language-javascript" dangerouslySetInnerHTML={{__html: this.getQuestionTitle(question)}}/>
         <form>
           {question.answers.map(function (option, i) {
             return (<div key={i}>

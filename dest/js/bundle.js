@@ -26521,12 +26521,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Quizes = require('../quizes/Quizes');
-
-var _Quizes2 = _interopRequireDefault(_Quizes);
-
-var _reactRouter = require('react-router');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26550,7 +26544,7 @@ var App = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(_Quizes2.default, null)
+        this.props.children
       );
     }
   }]);
@@ -26560,7 +26554,7 @@ var App = function (_React$Component) {
 
 exports.default = App;
 
-},{"../quizes/Quizes":252,"react":246,"react-router":194}],249:[function(require,module,exports){
+},{"react":246}],249:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26677,17 +26671,22 @@ var Question = function (_React$Component) {
 
     _this.state = { isSubmitted: false };
 
-    _this.q = {
-      "question": '<p>FUCK You perform the following operation in the shell:</p>\n    <pre><code>db.foo.insert( { } );</code></pre>\n    <p>What gets inserted?</p>',
-      "answers": ["An empty document", "A document with an _id assigned to be an ObjectId", "A document that matches the collection's existing schema, but with null fields", "No document will be inserted; an error will be raised", "A document will be inserted with the same _id as the last document inserted"],
-      "correctAnswerIndex": "1"
-    };
     _this.quizId = 0;
     _this.questionId = 0;
     return _this;
   }
 
   _createClass(Question, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      Prism.highlightAll();
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      Prism.highlightAll();
+    }
+  }, {
     key: 'findQuizById',
     value: function findQuizById(id) {
       return _quizes.quizes.find(function (x) {
@@ -26733,6 +26732,7 @@ var Question = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
+
       var quiz = this.findQuizById(this.quizId);
 
       var question = this.findQuestionById(this.questionId);
@@ -26754,7 +26754,7 @@ var Question = function (_React$Component) {
 
       return _react2.default.createElement(
         'div',
-        { className: 'question language-javascript' },
+        { className: 'question' },
         _react2.default.createElement('img', { className: 'quiz__icon', src: 'images/' + this.getQuizIcon(quiz), alt: 'quiz icon' }),
         _react2.default.createElement(
           'h2',
@@ -26765,11 +26765,11 @@ var Question = function (_React$Component) {
           'p',
           { className: 'quiz__questions-count' },
           'Question ',
-          this.questionId,
+          this.questionId + 1,
           '/',
           this.getQuestionCount(quiz)
         ),
-        _react2.default.createElement('div', { className: 'question__title', dangerouslySetInnerHTML: { __html: this.getQuestionTitle(question) } }),
+        _react2.default.createElement('div', { className: 'question__title language-javascript', dangerouslySetInnerHTML: { __html: this.getQuestionTitle(question) } }),
         _react2.default.createElement(
           'form',
           null,
@@ -26855,7 +26855,6 @@ var Quiz = function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var currentComponent = this.props.started;
 
       if (this.state.result === null) {
         return _react2.default.createElement(
@@ -26955,14 +26954,18 @@ var Quizes = function (_React$Component) {
   function Quizes(props) {
     _classCallCheck(this, Quizes);
 
-    return _possibleConstructorReturn(this, (Quizes.__proto__ || Object.getPrototypeOf(Quizes)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (Quizes.__proto__ || Object.getPrototypeOf(Quizes)).call(this, props));
+
+    _this.handleQuizIdChange = _this.props.handleQuizIdChange;
+    return _this;
   }
 
   _createClass(Quizes, [{
     key: 'getQuizes',
     value: function getQuizes() {
       return _quizes.quizes.map(function (quiz) {
-        return _react2.default.createElement(_Quiz2.default, { icon: quiz.icon, title: quiz.title, questions: quiz.questions.length, description: quiz.description,
+        return _react2.default.createElement(_Quiz2.default, {
+          icon: quiz.icon, title: quiz.title, questions: quiz.questions.length, description: quiz.description,
           key: quiz.id, id: quiz.id });
       });
     }
@@ -27053,7 +27056,7 @@ exports.default = Share;
 (function (global){
 "use strict";
 
-/* http://prismjs.com/download.html?themes=prism&languages=markup+clike+javascript */
+/* http://prismjs.com/download.html?themes=prism&languages=markup+css+clike+javascript */
 var _self = "undefined" != typeof window ? window : "undefined" != typeof WorkerGlobalScope && self instanceof WorkerGlobalScope ? self : {},
     Prism = function () {
   var e = /\blang(?:uage)?-(\w+)\b/i,
@@ -27174,6 +27177,7 @@ var _self = "undefined" != typeof window ? window : "undefined" != typeof Worker
 Prism.languages.markup = { comment: /<!--[\s\S]*?-->/, prolog: /<\?[\s\S]+?\?>/, doctype: /<!DOCTYPE[\s\S]+?>/i, cdata: /<!\[CDATA\[[\s\S]*?]]>/i, tag: { pattern: /<\/?(?!\d)[^\s>\/=$<]+(?:\s+[^\s>\/=]+(?:=(?:("|')(?:\\\1|\\?(?!\1)[\s\S])*\1|[^\s'">=]+))?)*\s*\/?>/i, inside: { tag: { pattern: /^<\/?[^\s>\/]+/i, inside: { punctuation: /^<\/?/, namespace: /^[^\s>\/:]+:/ } }, "attr-value": { pattern: /=(?:('|")[\s\S]*?(\1)|[^\s>]+)/i, inside: { punctuation: /[=>"']/ } }, punctuation: /\/?>/, "attr-name": { pattern: /[^\s>\/]+/, inside: { namespace: /^[^\s>\/:]+:/ } } } }, entity: /&#?[\da-z]{1,8};/i }, Prism.hooks.add("wrap", function (a) {
   "entity" === a.type && (a.attributes.title = a.content.replace(/&amp;/, "&"));
 }), Prism.languages.xml = Prism.languages.markup, Prism.languages.html = Prism.languages.markup, Prism.languages.mathml = Prism.languages.markup, Prism.languages.svg = Prism.languages.markup;
+Prism.languages.css = { comment: /\/\*[\s\S]*?\*\//, atrule: { pattern: /@[\w-]+?.*?(;|(?=\s*\{))/i, inside: { rule: /@[\w-]+/ } }, url: /url\((?:(["'])(\\(?:\r\n|[\s\S])|(?!\1)[^\\\r\n])*\1|.*?)\)/i, selector: /[^\{\}\s][^\{\};]*?(?=\s*\{)/, string: { pattern: /("|')(\\(?:\r\n|[\s\S])|(?!\1)[^\\\r\n])*\1/, greedy: !0 }, property: /(\b|\B)[\w-]+(?=\s*:)/i, important: /\B!important\b/i, "function": /[-a-z0-9]+(?=\()/i, punctuation: /[(){};:]/ }, Prism.languages.css.atrule.inside.rest = Prism.util.clone(Prism.languages.css), Prism.languages.markup && (Prism.languages.insertBefore("markup", "tag", { style: { pattern: /(<style[\s\S]*?>)[\s\S]*?(?=<\/style>)/i, lookbehind: !0, inside: Prism.languages.css, alias: "language-css" } }), Prism.languages.insertBefore("inside", "attr-value", { "style-attr": { pattern: /\s*style=("|').*?\1/i, inside: { "attr-name": { pattern: /^\s*style/i, inside: Prism.languages.markup.tag.inside }, punctuation: /^\s*=\s*['"]|['"]\s*$/, "attr-value": { pattern: /.+/i, inside: Prism.languages.css } }, alias: "language-css" } }, Prism.languages.markup.tag));
 Prism.languages.clike = { comment: [{ pattern: /(^|[^\\])\/\*[\s\S]*?\*\//, lookbehind: !0 }, { pattern: /(^|[^\\:])\/\/.*/, lookbehind: !0 }], string: { pattern: /(["'])(\\(?:\r\n|[\s\S])|(?!\1)[^\\\r\n])*\1/, greedy: !0 }, "class-name": { pattern: /((?:\b(?:class|interface|extends|implements|trait|instanceof|new)\s+)|(?:catch\s+\())[a-z0-9_\.\\]+/i, lookbehind: !0, inside: { punctuation: /(\.|\\)/ } }, keyword: /\b(if|else|while|do|for|return|in|instanceof|function|new|try|throw|catch|finally|null|break|continue)\b/, "boolean": /\b(true|false)\b/, "function": /[a-z0-9_]+(?=\()/i, number: /\b-?(?:0x[\da-f]+|\d*\.?\d+(?:e[+-]?\d+)?)\b/i, operator: /--?|\+\+?|!=?=?|<=?|>=?|==?=?|&&?|\|\|?|\?|\*|\/|~|\^|%/, punctuation: /[{}[\];(),.:]/ };
 Prism.languages.javascript = Prism.languages.extend("clike", { keyword: /\b(as|async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|public|return|set|static|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b/, number: /\b-?(0x[\dA-Fa-f]+|0b[01]+|0o[0-7]+|\d*\.?\d+([Ee][+-]?\d+)?|NaN|Infinity)\b/, "function": /[_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*(?=\()/i, operator: /-[-=]?|\+[+=]?|!=?=?|<<?=?|>>?>?=?|=(?:==?|>)?|&[&=]?|\|[|=]?|\*\*?=?|\/=?|~|\^=?|%=?|\?|\.{3}/ }), Prism.languages.insertBefore("javascript", "keyword", { regex: { pattern: /(^|[^\/])\/(?!\/)(\[.+?]|\\.|[^\/\\\r\n])+\/[gimyu]{0,5}(?=\s*($|[\r\n,.;})]))/, lookbehind: !0, greedy: !0 } }), Prism.languages.insertBefore("javascript", "string", { "template-string": { pattern: /`(?:\\\\|\\?[^\\])*?`/, greedy: !0, inside: { interpolation: { pattern: /\$\{[^}]+\}/, inside: { "interpolation-punctuation": { pattern: /^\$\{|\}$/, alias: "punctuation" }, rest: Prism.languages.javascript } }, string: /[\s\S]+/ } } }), Prism.languages.markup && Prism.languages.insertBefore("markup", "tag", { script: { pattern: /(<script[\s\S]*?>)[\s\S]*?(?=<\/script>)/i, lookbehind: !0, inside: Prism.languages.javascript, alias: "language-javascript" } }), Prism.languages.js = Prism.languages.javascript;
 
@@ -27196,17 +27200,17 @@ var quizes = exports.quizes = [{
     "correctAnswerIndex": "1"
   }, {
     "id": 1,
-    "question": "<p>Consider the following document:</p>\n> <pre><code>db.c.find()\n  { '_id' : 12, b : [ 3, 5, 7, 2, 1, -4, 3, 12 ] }</code></pre>\n  <p>Which of the following queries on the 'c' collection will return only the first five elements of the array in the 'b' field? E.g., Document you want returned by your query:</p>\n<pre><code>{ '_id' : 12, 'b' : [ 3, 5, 7, 2, 1 ] }</code></pre>",
+    "question": "<p>Consider the following document:</p>\n<pre><code>db.c.find()\n{ '_id' : 12, b : [ 3, 5, 7, 2, 1, -4, 3, 12 ] }</code></pre>\n  <p>Which of the following queries on the 'c' collection will return only the first five elements of the array in the 'b' field? E.g., Document you want returned by your query:</p>\n<pre><code>{ '_id' : 12, 'b' : [ 3, 5, 7, 2, 1 ] }</code></pre>",
     "answers": ["db.c.find( { } , { b : [ 0, 1, 2, 3, 4, 5 ] } )", "db.c.find( { } , { b : [ 0 , 5 ] } )", "db.c.find( { } , { b : { $slice : [ 0 , 5 ] } } )", "db.c.find( { } , { b : { $substr[ 0 , 5 ] } } )", "db.c.find( { b : [ 0 , 5 ] } )"],
     "correctAnswerIndex": "2"
   }, {
     "id": 2,
-    "question": "<p>Consider the following example document from the sample collection. All documents in this collection have the same schema</p>.\n  <pre><code>{\n    '_id' : 3, 'a' : 7, 'b' : 4\n  }\n  Which of the following queries will replace this with the document,\n  {\n    '_id' : 7, 'c' : 4, 'b' : 4\n  }</code></pre>",
+    "question": "<p>Consider the following example document from the sample collection. All documents in this collection have the same schema.</p>\n  <pre><code>{'_id' : 3, 'a' : 7, 'b' : 4}</code></pre>\n  <p>Which of the following queries will replace this with the document,</p>\n<pre><code>{'_id' : 7, 'c' : 4, 'b' : 4}</code></pre>",
     "answers": ["db.sample.update( { '_id' : 3 } , { '_id' : 7 , 'c' : 4 } )", "db.sample.update( { '_id' : 3 } , { '$set' : { '_id' : 7 , 'c' : 4 } } )", "db.sample.update( { '_id' : 3 } , { '_id' : 7 , 'c' : 4 , { '$unset' : [ 'a' , 'b' ] } } )", "db.sample.update( { '_id' : 3 } , { '_id' : 7 , 'c' : 4 } , { 'justOne' : true } )", "This operation cannot be done with a single query."],
     "correctAnswerIndex": "4"
   }, {
     "id": 3,
-    "question": "<p>Which of the documents below will be retrieved by the following query? Assume the documents are stored in a collection called sample. Check all that apply</p>\n  <pre><code>db.sample.find(            {\n    '$or':[\n      {\n        'a':{\n          '$in':[\n            3,\n            10\n          ]\n        }\n      },\n      {\n        'b':{\n          '$lt':2\n        }\n      }\n    ]\n  }            )</code></pre>",
+    "question": "<p>Which of the documents below will be retrieved by the following query? Assume the documents are stored in a collection called sample. Check all that apply</p>\n  <pre><code>db.sample.find( { '$or' : [ {'a' : { '$in' : [ 3, 10] } }, { 'b' : { '$lt' : 2 } } ] } )</code></pre>",
     "answers": ["{ '_id' : 1, 'a' : 0, 'c' : 0, 'b' : 2 }", "{ '_id' : 2, 'a' : 2, 'c' : 0, 'b' : 1 }", "{ '_id' : 3, 'a' : 4, 'c' : 0, 'b' : 14 }", "{ '_id' : 4, 'a' : 5, 'c' : 0, 'b' : 17 }", "{ '_id' : 5, 'a' : 3, 'c' : 0, 'b' : 12 }", "{ '_id' : 6, 'a' : 1, 'c' : 1, 'b' : 5 }", "{ '_id' : 7, 'a' : 8, 'c' : 1, 'b' : 7 }", "{ '_id' : 8, 'a' : 11, 'c' : 1, 'b' : 0 }", "{ '_id' : 9, 'a' : 17, 'c' : 1, 'b' : 1 }", "{ '_id' : 10, 'a' : 3, 'c' : 1, 'b' : 1 }"],
     "correctAnswerIndex": ["1", "4", "7", "8", "9"]
   }, {
@@ -27267,13 +27271,22 @@ var _Question = require('../components/question/Question');
 
 var _Question2 = _interopRequireDefault(_Question);
 
+var _Quizes = require('../components/quizes/Quizes');
+
+var _Quizes2 = _interopRequireDefault(_Quizes);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var routes = exports.routes = _react2.default.createElement(
   'div',
   null,
-  _react2.default.createElement(_reactRouter.Route, { path: '/source/index.html', component: _App2.default }),
-  _react2.default.createElement(_reactRouter.Route, { path: '/source/quiz', component: _Question2.default })
+  _react2.default.createElement(
+    _reactRouter.Route,
+    { path: '/source', component: _App2.default },
+    _react2.default.createElement(_reactRouter.IndexRoute, { component: _Quizes2.default }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/source/quizes', component: _Quizes2.default }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/source/quiz', component: _Question2.default })
+  )
 );
 
-},{"../components/app/App":248,"../components/question/Question":250,"react":246,"react-router":194}]},{},[248,249,250,251,252,253,254,255,256,257]);
+},{"../components/app/App":248,"../components/question/Question":250,"../components/quizes/Quizes":252,"react":246,"react-router":194}]},{},[248,249,250,251,252,253,254,255,256,257]);

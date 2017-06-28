@@ -23,8 +23,8 @@ export const quizes = [{
     {
       "id": 1,
       "question": `<p>Consider the following document:</p>
-> <pre><code>db.c.find()
-  { '_id' : 12, b : [ 3, 5, 7, 2, 1, -4, 3, 12 ] }</code></pre>
+<pre><code>db.c.find()
+{ '_id' : 12, b : [ 3, 5, 7, 2, 1, -4, 3, 12 ] }</code></pre>
   <p>Which of the following queries on the 'c' collection will return only the first five elements of the array in the 'b' field? E.g., Document you want returned by your query:</p>
 <pre><code>{ '_id' : 12, 'b' : [ 3, 5, 7, 2, 1 ] }</code></pre>`,
       "answers": [
@@ -38,14 +38,10 @@ export const quizes = [{
     },
     {
       "id": 2,
-      "question": `<p>Consider the following example document from the sample collection. All documents in this collection have the same schema</p>.
-  <pre><code>{
-    '_id' : 3, 'a' : 7, 'b' : 4
-  }
-  Which of the following queries will replace this with the document,
-  {
-    '_id' : 7, 'c' : 4, 'b' : 4
-  }</code></pre>`,
+      "question": `<p>Consider the following example document from the sample collection. All documents in this collection have the same schema.</p>
+  <pre><code>{'_id' : 3, 'a' : 7, 'b' : 4}</code></pre>
+  <p>Which of the following queries will replace this with the document,</p>
+<pre><code>{'_id' : 7, 'c' : 4, 'b' : 4}</code></pre>`,
       "answers": [
         "db.sample.update( { '_id' : 3 } , { '_id' : 7 , 'c' : 4 } )",
         "db.sample.update( { '_id' : 3 } , { '$set' : { '_id' : 7 , 'c' : 4 } } )",
@@ -58,23 +54,7 @@ export const quizes = [{
     {
       "id": 3,
       "question": `<p>Which of the documents below will be retrieved by the following query? Assume the documents are stored in a collection called sample. Check all that apply</p>
-  <pre><code>db.sample.find(            {
-    '$or':[
-      {
-        'a':{
-          '$in':[
-            3,
-            10
-          ]
-        }
-      },
-      {
-        'b':{
-          '$lt':2
-        }
-      }
-    ]
-  }            )</code></pre>`,
+  <pre><code>db.sample.find( { '$or' : [ {'a' : { '$in' : [ 3, 10] } }, { 'b' : { '$lt' : 2 } } ] } )</code></pre>`,
       "answers": [
         "{ '_id' : 1, 'a' : 0, 'c' : 0, 'b' : 2 }",
         "{ '_id' : 2, 'a' : 2, 'c' : 0, 'b' : 1 }",

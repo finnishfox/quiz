@@ -1,6 +1,4 @@
 import React from 'react';
-import Quizes from "../quizes/Quizes";
-import { Link } from 'react-router';
 
 
 class App extends React.Component {
@@ -12,7 +10,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Quizes/>
+        {this.props.children}
       </div>
     );
   }

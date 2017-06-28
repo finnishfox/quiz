@@ -1,18 +1,19 @@
 import React from 'react';
 import Share from "../share/Share";
 import Progress from "../progress/Progress";
-import { Link } from 'react-router'
-
+import {Link} from 'react-router'
 
 
 class Quiz extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { result: null};
+    this.state = {result: null};
     this.toggleOverlay = this.toggleOverlay.bind(this);
     this.startQuiz = this.startQuiz.bind(this);
 
   }
+
+
 
   toggleOverlay(e) {
     const overlay = e.currentTarget.parentElement.querySelector('.quiz__overlay');
@@ -22,13 +23,11 @@ class Quiz extends React.Component {
 
   startQuiz(e) {
 
-
   }
 
 
-
   render() {
-    const currentComponent = this.props.started;
+
 
     if (this.state.result === null) {
       return (
