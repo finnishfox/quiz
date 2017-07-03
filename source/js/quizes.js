@@ -18,7 +18,7 @@ export const quizes = [{
         "3",
         "5"
       ],
-      "correctAnswerIndex": "1"
+      "correctAnswerIndex": 1
     },
     {
       "id": 1,
@@ -34,7 +34,7 @@ export const quizes = [{
         "db.c.find( { } , { b : { $substr[ 0 , 5 ] } } )",
         "db.c.find( { b : [ 0 , 5 ] } )"
       ],
-      "correctAnswerIndex": "2"
+      "correctAnswerIndex": 2
     },
     {
       "id": 2,
@@ -49,7 +49,7 @@ export const quizes = [{
         "db.sample.update( { '_id' : 3 } , { '_id' : 7 , 'c' : 4 } , { 'justOne' : true } )",
         "This operation cannot be done with a single query."
       ],
-      "correctAnswerIndex": "4"
+      "correctAnswerIndex": 4
     },
     {
       "id": 3,
@@ -68,11 +68,11 @@ export const quizes = [{
         "{ '_id' : 10, 'a' : 3, 'c' : 1, 'b' : 1 }"
       ],
       "correctAnswerIndex": [
-        "1",
-        "4",
-        "7",
-        "8",
-        "9"
+        1,
+        4,
+        7,
+        8,
+        9
       ]
     },
     {
@@ -87,7 +87,7 @@ export const quizes = [{
         "No document will be inserted; an error will be raised",
         "A document will be inserted with the same _id as the last document inserted"
       ],
-      "correctAnswerIndex": "1"
+      "correctAnswerIndex": 1
     }
   ]
 }];

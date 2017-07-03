@@ -1,0 +1,83 @@
+@import "./../../variables.scss";
+
+.result {
+  margin: $margin-big;
+  height: calc(100vh - 2 * #{$margin-big});
+  position: relative;
+
+  &__title {
+    font-family: $open-sans;
+    font-size: 36px;
+    color: $dark-blue;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  &__wrapper {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    right: 0;
+    text-align: center;
+
+    .progress {
+      //position: static;
+      position: relative;
+      bottom: auto;
+
+      &__value {
+        //position: absolute;
+        //left: 0;
+        //right: 0;
+        //top: 50%;
+        //transform: translateY(-50%)
+      }
+    }
+  }
+  .share {
+    position: static;
+    display: inline-block;
+    margin-top: 40px;
+
+    &__title,
+    &__icon {
+      color: $dark-blue;
+    }
+  }
+
+  &__button {
+    background: $red;
+    border-radius: 15px;
+    width: 280px;
+    height: 50px;
+    font-family: $open-sans;
+    font-size: 20px;
+    color: $ice;
+    letter-spacing: 0;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    cursor: pointer;
+    text-align: center;
+    line-height: 50px;
+
+    &:after {
+      font-family: FontAwesome;
+      content: "\f105";
+      display: inline-block;
+      margin-left: 20px;
+    }
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .result {
+    margin: $margin-small;
+    height: calc(100vh - 2 * #{$margin-small});
+
+    &__button {
+      width: 100%;
+    }
+  }
+}

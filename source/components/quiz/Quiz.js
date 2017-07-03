@@ -1,7 +1,7 @@
 import React from 'react';
 import Share from "../share/Share";
 import Progress from "../progress/Progress";
-import {Link} from 'react-router'
+import {Link} from 'react-router';
 
 
 class Quiz extends React.Component {

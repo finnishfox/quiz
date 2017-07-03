@@ -1,7 +1,7 @@
 @import "./../../variables.scss";
 
 .question {
-  margin: 40px;
+  margin: $margin-big;
 
   &__title {
     font-family: $open-sans;
@@ -11,12 +11,10 @@
     margin-bottom: 90px;
     line-height: 1.5;
 
-    p{
-      margin: 10px 0 ;
+    p {
+      margin: 10px 0;
     }
   }
-
-
 
   &__input {
     position: absolute;
@@ -31,6 +29,19 @@
       }
 
     }
+
+    &--correct {
+      & + label.question__answer {
+        background: $green;
+      }
+    }
+
+    &--wrong {
+      & + label.question__answer {
+        background: $red-wrong;
+        color: $ice;
+      }
+    }
   }
 
   &__answer {
@@ -44,15 +55,16 @@
     display: flex;
     align-items: center;
     margin-bottom: 10px;
+    line-height: 1.5;
+    padding-right: 20px;
 
-    &__correct{
-      background: $green;
-    }
-
-    &__wrong{
-      background: $red;
-    }
-
+    //&__correct{
+    //  background: $green;
+    //}
+    //
+    //&__wrong{
+    //  background: $red;
+    //}
 
     &:before {
       content: '';
@@ -62,10 +74,11 @@
       border: 3px solid $dark-blue;
       border-radius: 50%;
       margin: 0 20px;
+      flex-shrink: 0;
     }
   }
 
-  &__button{
+  &__button {
     background: $dark-blue;
     border-radius: 15px;
     width: 280px;
@@ -73,13 +86,27 @@
     font-family: $open-sans;
     font-size: 20px;
     color: $ice;
-    margin-top: 30px;
-    margin-bottom: 70px;
+    margin: 30px auto 70px;
     float: right;
+    cursor: pointer;
+    left: 0;
+    right: 0;
+    text-align: center;
+    line-height: 50px;
 
-    &:hover{
+    &:hover {
       background: $dark-blue-hover;
     }
 
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .question {
+    margin: $margin-small;
+
+    &__button {
+      width: 100%;
+    }
   }
 }

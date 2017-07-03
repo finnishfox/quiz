@@ -26644,6 +26644,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _quizes = require('../../js/quizes');
 
+var _reactRouter = require('react-router');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26668,11 +26670,10 @@ var Question = function (_React$Component) {
     _this.getQuizTitle = _this.getQuizTitle.bind(_this);
     _this.getQuestionCount = _this.getQuestionCount.bind(_this);
     _this.getQuestionTitle = _this.getQuestionTitle.bind(_this);
+    _this.getCorrectAnswers = _this.getCorrectAnswers.bind(_this);
 
-    _this.state = { isSubmitted: false };
+    _this.state = { isSubmitted: false, quizId: 0, questionId: 4, result: 0, isLast: false };
 
-    _this.quizId = 0;
-    _this.questionId = 0;
     return _this;
   }
 
@@ -26696,7 +26697,7 @@ var Question = function (_React$Component) {
   }, {
     key: 'findQuestionById',
     value: function findQuestionById(id) {
-      var quiz = this.findQuizById(this.quizId);
+      var quiz = this.findQuizById(this.state.quizId);
       return quiz.questions.find(function (x) {
         return x.id === id;
       });
@@ -26722,32 +26723,92 @@ var Question = function (_React$Component) {
       return question.question;
     }
   }, {
+    key: 'getCorrectAnswers',
+    value: function getCorrectAnswers(question) {
+      return question.correctAnswerIndex;
+    }
+  }, {
     key: 'next',
-    value: function next() {}
+    value: function next() {
+      this.setState({ questionId: this.state.questionId + 1, isSubmitted: false });
+      document.querySelectorAll('.question__input').forEach(function (checkbox) {
+        checkbox.checked = false;
+        checkbox.classList.remove("question__input--correct");
+        checkbox.classList.remove("question__input--wrong");
+      });
+    }
+  }, {
+    key: 'diff',
+    value: function diff(a, b) {
+      return a.filter(function (i) {
+        return b.indexOf(i) < 0;
+      });
+    }
   }, {
     key: 'submit',
-    value: function submit() {
+    value: function submit(question) {
+      if (this.state.questionId + 1 === this.getQuestionCount(this.findQuizById(this.state.quizId))) {
+        this.setState({ isLast: true });
+      }
       this.setState({ isSubmitted: true });
+      var checkboxes = document.querySelectorAll('.question__input');
+      var checked = [];
+      for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+          checked.push(i);
+        }
+      }
+
+      var correctAnswers = this.getCorrectAnswers(question);
+      if (!Array.isArray(correctAnswers)) {
+        correctAnswers = Array.of(correctAnswers);
+      }
+
+      if (checked.length === correctAnswers.length && checked.every(function (v, i) {
+        return v === correctAnswers[i];
+      })) {
+        this.setState({ result: this.state.result + 1 });
+      }
+
+      correctAnswers.forEach(function (answer) {
+        checkboxes[answer].classList.add("question__input--correct");
+      });
+
+      var wrongChecked = this.diff(checked, correctAnswers);
+      wrongChecked.forEach(function (checkbox) {
+        checkboxes[checkbox].classList.add("question__input--wrong");
+      });
     }
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
 
-      var quiz = this.findQuizById(this.quizId);
+      var quiz = this.findQuizById(this.state.quizId);
 
-      var question = this.findQuestionById(this.questionId);
+      var question = this.findQuestionById(this.state.questionId);
 
       var button = null;
       if (this.state.isSubmitted) {
-        button = _react2.default.createElement(
-          'button',
-          { type: 'button', className: 'question__button', onClick: this.next },
-          'Next'
-        );
+        if (this.state.isLast) {
+          button = _react2.default.createElement(
+            _reactRouter.Link,
+            { to: '/source/result', role: 'button', className: 'question__button' },
+            'Show results'
+          );
+        } else {
+          button = _react2.default.createElement(
+            'button',
+            { type: 'button', className: 'question__button', onClick: this.next },
+            'Next'
+          );
+        }
       } else {
         button = _react2.default.createElement(
           'button',
-          { type: 'button', className: 'question__button', onClick: this.submit },
+          { type: 'button', className: 'question__button', onClick: function onClick() {
+              return _this2.submit(question);
+            } },
           'Submit'
         );
       }
@@ -26765,11 +26826,12 @@ var Question = function (_React$Component) {
           'p',
           { className: 'quiz__questions-count' },
           'Question ',
-          this.questionId + 1,
+          this.state.questionId + 1,
           '/',
           this.getQuestionCount(quiz)
         ),
-        _react2.default.createElement('div', { className: 'question__title language-javascript', dangerouslySetInnerHTML: { __html: this.getQuestionTitle(question) } }),
+        _react2.default.createElement('div', { className: 'question__title language-javascript',
+          dangerouslySetInnerHTML: { __html: this.getQuestionTitle(question) } }),
         _react2.default.createElement(
           'form',
           null,
@@ -26796,7 +26858,7 @@ var Question = function (_React$Component) {
 
 exports.default = Question;
 
-},{"../../js/quizes":255,"react":246}],251:[function(require,module,exports){
+},{"../../js/quizes":256,"react":246,"react-router":194}],251:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26921,7 +26983,7 @@ var Quiz = function (_React$Component) {
 
 exports.default = Quiz;
 
-},{"../progress/Progress":249,"../share/Share":253,"react":246,"react-router":194}],252:[function(require,module,exports){
+},{"../progress/Progress":249,"../share/Share":254,"react":246,"react-router":194}],252:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26995,7 +27057,121 @@ var Quizes = function (_React$Component) {
 
 exports.default = Quizes;
 
-},{"../../js/quizes":255,"../quiz/Quiz":251,"react":246}],253:[function(require,module,exports){
+},{"../../js/quizes":256,"../quiz/Quiz":251,"react":246}],253:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _quizes = require('../../js/quizes');
+
+var _Progress = require('../progress/Progress');
+
+var _Progress2 = _interopRequireDefault(_Progress);
+
+var _reactRouter = require('react-router');
+
+var _Share = require('../share/Share');
+
+var _Share2 = _interopRequireDefault(_Share);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Result = function (_React$Component) {
+  _inherits(Result, _React$Component);
+
+  function Result(props) {
+    _classCallCheck(this, Result);
+
+    var _this = _possibleConstructorReturn(this, (Result.__proto__ || Object.getPrototypeOf(Result)).call(this, props));
+
+    _this.findQuizById = _this.findQuizById.bind(_this);
+    _this.findQuestionById = _this.findQuestionById.bind(_this);
+    _this.getQuizIcon = _this.getQuizIcon.bind(_this);
+    _this.getQuizTitle = _this.getQuizTitle.bind(_this);
+
+    _this.state = { quizId: 0, result: 0 };
+    return _this;
+  }
+
+  _createClass(Result, [{
+    key: 'findQuizById',
+    value: function findQuizById(id) {
+      return _quizes.quizes.find(function (x) {
+        return x.id === id;
+      });
+    }
+  }, {
+    key: 'findQuestionById',
+    value: function findQuestionById(id) {
+      var quiz = this.findQuizById(this.state.quizId);
+      return quiz.questions.find(function (x) {
+        return x.id === id;
+      });
+    }
+  }, {
+    key: 'getQuizIcon',
+    value: function getQuizIcon(quiz) {
+      return quiz.icon;
+    }
+  }, {
+    key: 'getQuizTitle',
+    value: function getQuizTitle(quiz) {
+      return quiz.title;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var quiz = this.findQuizById(this.state.quizId);
+
+      return _react2.default.createElement(
+        'div',
+        { className: 'result' },
+        _react2.default.createElement('img', { className: 'quiz__icon', src: 'images/' + this.getQuizIcon(quiz), alt: 'quiz icon' }),
+        _react2.default.createElement(
+          'h2',
+          { className: 'quiz__title' },
+          this.getQuizTitle(quiz)
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'result__wrapper' },
+          _react2.default.createElement(
+            'p',
+            { className: 'result__title' },
+            'Your result'
+          ),
+          _react2.default.createElement(_Progress2.default, { progress: this.state.result }),
+          _react2.default.createElement(_Share2.default, null)
+        ),
+        _react2.default.createElement(
+          _reactRouter.Link,
+          { to: '/source/', role: 'button', className: 'result__button' },
+          'Quizes'
+        )
+      );
+    }
+  }]);
+
+  return Result;
+}(_react2.default.Component);
+
+exports.default = Result;
+
+},{"../../js/quizes":256,"../progress/Progress":249,"../share/Share":254,"react":246,"react-router":194}],254:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27052,7 +27228,7 @@ var Share = function (_React$Component) {
 
 exports.default = Share;
 
-},{"react":246}],254:[function(require,module,exports){
+},{"react":246}],255:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -27182,7 +27358,7 @@ Prism.languages.clike = { comment: [{ pattern: /(^|[^\\])\/\*[\s\S]*?\*\//, look
 Prism.languages.javascript = Prism.languages.extend("clike", { keyword: /\b(as|async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|public|return|set|static|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b/, number: /\b-?(0x[\dA-Fa-f]+|0b[01]+|0o[0-7]+|\d*\.?\d+([Ee][+-]?\d+)?|NaN|Infinity)\b/, "function": /[_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*(?=\()/i, operator: /-[-=]?|\+[+=]?|!=?=?|<<?=?|>>?>?=?|=(?:==?|>)?|&[&=]?|\|[|=]?|\*\*?=?|\/=?|~|\^=?|%=?|\?|\.{3}/ }), Prism.languages.insertBefore("javascript", "keyword", { regex: { pattern: /(^|[^\/])\/(?!\/)(\[.+?]|\\.|[^\/\\\r\n])+\/[gimyu]{0,5}(?=\s*($|[\r\n,.;})]))/, lookbehind: !0, greedy: !0 } }), Prism.languages.insertBefore("javascript", "string", { "template-string": { pattern: /`(?:\\\\|\\?[^\\])*?`/, greedy: !0, inside: { interpolation: { pattern: /\$\{[^}]+\}/, inside: { "interpolation-punctuation": { pattern: /^\$\{|\}$/, alias: "punctuation" }, rest: Prism.languages.javascript } }, string: /[\s\S]+/ } } }), Prism.languages.markup && Prism.languages.insertBefore("markup", "tag", { script: { pattern: /(<script[\s\S]*?>)[\s\S]*?(?=<\/script>)/i, lookbehind: !0, inside: Prism.languages.javascript, alias: "language-javascript" } }), Prism.languages.js = Prism.languages.javascript;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],255:[function(require,module,exports){
+},{}],256:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27197,31 +27373,31 @@ var quizes = exports.quizes = [{
     "id": 0,
     "question": "<p>Consider the following documents</p>\n      <pre><code>{ '_id' : 1, 'a' : 1, 'b' : 1 } { '_id' : 2, 'a' : 2, 'b' : 3 } { '_id' : 3, 'a' : 3, 'b' : 6 } { '_id' : 4, 'a' : 4, 'b' : 10 } { '_id' : 5, 'a' : 5, 'b' : 15 }</code></pre>\n      <p>You perform the following query:</p>\n<pre><code>db.stuff.update( { b : { $gte : 10 } }, { $set : { b : 15 } }, { multi : true, upsert : true } )</code></pre>\n<p>How many documents will be updated by the query?</p>",
     "answers": ["0", "1", "2", "3", "5"],
-    "correctAnswerIndex": "1"
+    "correctAnswerIndex": 1
   }, {
     "id": 1,
     "question": "<p>Consider the following document:</p>\n<pre><code>db.c.find()\n{ '_id' : 12, b : [ 3, 5, 7, 2, 1, -4, 3, 12 ] }</code></pre>\n  <p>Which of the following queries on the 'c' collection will return only the first five elements of the array in the 'b' field? E.g., Document you want returned by your query:</p>\n<pre><code>{ '_id' : 12, 'b' : [ 3, 5, 7, 2, 1 ] }</code></pre>",
     "answers": ["db.c.find( { } , { b : [ 0, 1, 2, 3, 4, 5 ] } )", "db.c.find( { } , { b : [ 0 , 5 ] } )", "db.c.find( { } , { b : { $slice : [ 0 , 5 ] } } )", "db.c.find( { } , { b : { $substr[ 0 , 5 ] } } )", "db.c.find( { b : [ 0 , 5 ] } )"],
-    "correctAnswerIndex": "2"
+    "correctAnswerIndex": 2
   }, {
     "id": 2,
     "question": "<p>Consider the following example document from the sample collection. All documents in this collection have the same schema.</p>\n  <pre><code>{'_id' : 3, 'a' : 7, 'b' : 4}</code></pre>\n  <p>Which of the following queries will replace this with the document,</p>\n<pre><code>{'_id' : 7, 'c' : 4, 'b' : 4}</code></pre>",
     "answers": ["db.sample.update( { '_id' : 3 } , { '_id' : 7 , 'c' : 4 } )", "db.sample.update( { '_id' : 3 } , { '$set' : { '_id' : 7 , 'c' : 4 } } )", "db.sample.update( { '_id' : 3 } , { '_id' : 7 , 'c' : 4 , { '$unset' : [ 'a' , 'b' ] } } )", "db.sample.update( { '_id' : 3 } , { '_id' : 7 , 'c' : 4 } , { 'justOne' : true } )", "This operation cannot be done with a single query."],
-    "correctAnswerIndex": "4"
+    "correctAnswerIndex": 4
   }, {
     "id": 3,
     "question": "<p>Which of the documents below will be retrieved by the following query? Assume the documents are stored in a collection called sample. Check all that apply</p>\n  <pre><code>db.sample.find( { '$or' : [ {'a' : { '$in' : [ 3, 10] } }, { 'b' : { '$lt' : 2 } } ] } )</code></pre>",
     "answers": ["{ '_id' : 1, 'a' : 0, 'c' : 0, 'b' : 2 }", "{ '_id' : 2, 'a' : 2, 'c' : 0, 'b' : 1 }", "{ '_id' : 3, 'a' : 4, 'c' : 0, 'b' : 14 }", "{ '_id' : 4, 'a' : 5, 'c' : 0, 'b' : 17 }", "{ '_id' : 5, 'a' : 3, 'c' : 0, 'b' : 12 }", "{ '_id' : 6, 'a' : 1, 'c' : 1, 'b' : 5 }", "{ '_id' : 7, 'a' : 8, 'c' : 1, 'b' : 7 }", "{ '_id' : 8, 'a' : 11, 'c' : 1, 'b' : 0 }", "{ '_id' : 9, 'a' : 17, 'c' : 1, 'b' : 1 }", "{ '_id' : 10, 'a' : 3, 'c' : 1, 'b' : 1 }"],
-    "correctAnswerIndex": ["1", "4", "7", "8", "9"]
+    "correctAnswerIndex": [1, 4, 7, 8, 9]
   }, {
     "id": 4,
     "question": "<p>You perform the following operation in the shell:</p>\n    <pre><code>db.foo.insert( { } );</code></pre>\n    <p>What gets inserted?</p>",
     "answers": ["An empty document", "A document with an _id assigned to be an ObjectId", "A document that matches the collection's existing schema, but with null fields", "No document will be inserted; an error will be raised", "A document will be inserted with the same _id as the last document inserted"],
-    "correctAnswerIndex": "1"
+    "correctAnswerIndex": 1
   }]
 }];
 
-},{}],256:[function(require,module,exports){
+},{}],257:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -27249,7 +27425,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_reactRouter.Router, { history: _reactRouter.browserHistory, routes: _routes.routes }), document.getElementById('root'));
 
-},{"./routes":257,"react":246,"react-dom":37,"react-router":194}],257:[function(require,module,exports){
+},{"./routes":258,"react":246,"react-dom":37,"react-router":194}],258:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27275,6 +27451,10 @@ var _Quizes = require('../components/quizes/Quizes');
 
 var _Quizes2 = _interopRequireDefault(_Quizes);
 
+var _Result = require('../components/result/Result');
+
+var _Result2 = _interopRequireDefault(_Result);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var routes = exports.routes = _react2.default.createElement(
@@ -27285,8 +27465,11 @@ var routes = exports.routes = _react2.default.createElement(
     { path: '/source', component: _App2.default },
     _react2.default.createElement(_reactRouter.IndexRoute, { component: _Quizes2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: '/source/quizes', component: _Quizes2.default }),
-    _react2.default.createElement(_reactRouter.Route, { path: '/source/quiz', component: _Question2.default })
+    _react2.default.createElement(_reactRouter.Route, { path: '/source/quiz', component: function component() {
+        return _react2.default.createElement(_Question2.default, null);
+      } }),
+    _react2.default.createElement(_reactRouter.Route, { path: '/source/result', component: _Result2.default })
   )
 );
 
-},{"../components/app/App":248,"../components/question/Question":250,"../components/quizes/Quizes":252,"react":246,"react-router":194}]},{},[248,249,250,251,252,253,254,255,256,257]);
+},{"../components/app/App":248,"../components/question/Question":250,"../components/quizes/Quizes":252,"../components/result/Result":253,"react":246,"react-router":194}]},{},[248,249,250,251,252,253,254,255,256,257,258]);
