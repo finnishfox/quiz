@@ -21,8 +21,6 @@
   font-size: 40px;
   color: #1C3144;
   position: absolute;
-  left: 0;
-  right: 0;
   top: 50%;
   transform: translateY(-50%);
 }
@@ -271,6 +269,11 @@
 .result__wrapper .progress {
   position: relative;
   bottom: auto;
+}
+
+.result__wrapper .progress__value {
+  left: 0;
+  right: 0;
 }
 
 .result .share {

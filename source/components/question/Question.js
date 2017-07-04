@@ -1,7 +1,8 @@
 import React from 'react';
 import {quizes} from '../../js/quizes';
-import {Link} from 'react-router'
-
+import {Link} from 'react-router';
+import store from '../../store/index';
+import {setResult} from '../../actions/actions';
 
 class Question extends React.Component {
   constructor() {
@@ -16,8 +17,12 @@ class Question extends React.Component {
     this.getQuestionCount = this.getQuestionCount.bind(this);
     this.getQuestionTitle = this.getQuestionTitle.bind(this);
     this.getCorrectAnswers = this.getCorrectAnswers.bind(this);
+    this.setResult = this.setResult.bind(this);
 
-    this.state = {isSubmitted: false, quizId: 0, questionId: 4, result: 0, isLast: false};
+    this.state = {isSubmitted: false, questionId: 0, isLast: false};
+
+    this.quizId = store.getState().quizId;
+
 
   }
 
@@ -34,7 +39,7 @@ class Question extends React.Component {
   }
 
   findQuestionById(id) {
-    let quiz = this.findQuizById(this.state.quizId);
+    let quiz = this.findQuizById(this.quizId);
     return quiz.questions.find(x => x.id === id);
   }
 
@@ -77,9 +82,14 @@ class Question extends React.Component {
     });
   }
 
+  setResult(result) {
+    store.dispatch(setResult(this.quizId, result));
+  }
+
 
   submit(question) {
-    if (this.state.questionId + 1 === this.getQuestionCount(this.findQuizById(this.state.quizId))) {
+    let questionCount = this.getQuestionCount(this.findQuizById(this.quizId));
+    if (this.state.questionId + 1 === questionCount) {
       this.setState({isLast: true});
     }
     this.setState({isSubmitted: true});
@@ -97,7 +107,7 @@ class Question extends React.Component {
     }
 
     if (checked.length === correctAnswers.length && checked.every((v, i) => v === correctAnswers[i])) {
-      this.setState({result: this.state.result + 1});
+      this.setResult(store.getState().quizes.find(x => x.quizId === this.quizId).result + 1);
     }
 
     correctAnswers.forEach(answer => {
@@ -114,13 +124,18 @@ class Question extends React.Component {
 
 
   render() {
-    let quiz = this.findQuizById(this.state.quizId);
+    let quiz = this.findQuizById(this.quizId);
 
     let question = this.findQuestionById(this.state.questionId);
 
     let button = null;
     if (this.state.isSubmitted) {
       if (this.state.isLast) {
+
+        let finalResult = Math.round(store.getState().quizes.find(x => x.quizId === this.quizId).result * 100
+          / this.getQuestionCount(quiz));
+        this.setResult(finalResult);
+
         button = <Link to='/source/result' role="button" className="question__button">Show results</Link>
       } else {
         button = <button type="button" className="question__button" onClick={this.next}>Next</button>

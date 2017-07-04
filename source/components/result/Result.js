@@ -1,8 +1,9 @@
 import React from 'react';
 import {quizes} from '../../js/quizes';
 import Progress from "../progress/Progress";
-import {Link} from 'react-router'
+import {Link} from 'react-router';
 import Share from "../share/Share";
+import store from '../../store/index';
 
 class Result extends React.Component {
   constructor(props) {
@@ -13,7 +14,10 @@ class Result extends React.Component {
     this.getQuizIcon = this.getQuizIcon.bind(this);
     this.getQuizTitle = this.getQuizTitle.bind(this);
 
-    this.state = {quizId: 0, result: 0};
+
+
+
+    this.quizId = store.getState().quizId;
   }
 
   findQuizById(id) {
@@ -21,7 +25,7 @@ class Result extends React.Component {
   }
 
   findQuestionById(id) {
-    let quiz = this.findQuizById(this.state.quizId);
+    let quiz = this.findQuizById(this.quizId);
     return quiz.questions.find(x => x.id === id);
   }
 
@@ -35,7 +39,7 @@ class Result extends React.Component {
   }
 
   render() {
-    let quiz = this.findQuizById(this.state.quizId);
+    let quiz = this.findQuizById(this.quizId);
 
     return (
       <div className="result">
@@ -43,7 +47,7 @@ class Result extends React.Component {
         <h2 className="quiz__title">{this.getQuizTitle(quiz)}</h2>
         <div className="result__wrapper">
           <p className="result__title">Your result</p>
-          <Progress progress={this.state.result}/>
+          <Progress progress={store.getState().quizes.find(x => x.quizId === this.quizId).result}/>
           <Share/>
         </div>
 

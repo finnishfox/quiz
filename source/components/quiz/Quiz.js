@@ -2,17 +2,17 @@ import React from 'react';
 import Share from "../share/Share";
 import Progress from "../progress/Progress";
 import {Link} from 'react-router';
+import {setQuizId,addQuiz} from '../../actions/actions';
+import store from '../../store/index';
 
 
 class Quiz extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {result: null};
     this.toggleOverlay = this.toggleOverlay.bind(this);
     this.startQuiz = this.startQuiz.bind(this);
 
   }
-
 
 
   toggleOverlay(e) {
@@ -22,14 +22,13 @@ class Quiz extends React.Component {
   }
 
   startQuiz(e) {
-
+    store.dispatch(setQuizId(this.props.id));
+    store.dispatch(addQuiz(this.props.id));
   }
 
 
   render() {
-
-
-    if (this.state.result === null) {
+    if (store.getState().quizes.find(x => x.quizId === this.props.id) === undefined) {
       return (
         <div className="quiz">
           <img className="quiz__icon" src={'images/' + this.props.icon} alt="quiz icon"/>
@@ -47,9 +46,10 @@ class Quiz extends React.Component {
         <img className="quiz__icon" src={'images/' + this.props.icon} alt="quiz icon"/>
         <h2 className="quiz__title">{this.props.title}</h2>
         <p className="quiz__questions-count">{this.props.questions} questions</p>
-        <Progress progress={this.state.result}/>
+        <Progress progress={store.getState().quizes.find(x => x.quizId === this.props.id).result}/>
         <div className="quiz__overlay">
-          <button className="quiz__button quiz__button--v-centered">Try again</button>
+          <Link to='/source/quiz' role="button" className="quiz__button quiz__button--v-centered"
+                onClick={this.startQuiz}>Try again</Link>
           <Share/>
         </div>
       </div>
