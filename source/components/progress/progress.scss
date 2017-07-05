@@ -11,8 +11,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
-
+  text-align: center;
 
   &__circle {
     transform: rotate(-90deg);
@@ -25,7 +24,9 @@
     color: $dark-blue;
     position: absolute;
     top: 50%;
-    transform: translateY(-50%)
+    transform: translateY(-50%);
+    left: 0;
+    right: 0;
 
   }
 }

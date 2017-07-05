@@ -28667,6 +28667,39 @@ function setResult(id, result) {
 }
 
 },{}],296:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.findQuizById = findQuizById;
+exports.getQuizIcon = getQuizIcon;
+exports.getQuizTitle = getQuizTitle;
+exports.getQuestionCount = getQuestionCount;
+exports.countPercentResult = countPercentResult;
+function findQuizById(quizes, id) {
+  return quizes.find(function (x) {
+    return x.id === id;
+  });
+}
+
+function getQuizIcon(quiz) {
+  return quiz.icon;
+}
+
+function getQuizTitle(quiz) {
+  return quiz.title;
+}
+
+function getQuestionCount(quiz) {
+  return quiz.questions.length;
+}
+
+function countPercentResult(result, questionCount) {
+  return Math.round(result * 100 / questionCount);
+}
+
+},{}],297:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28712,7 +28745,7 @@ var App = function (_React$Component) {
 
 exports.default = App;
 
-},{"react":273}],297:[function(require,module,exports){
+},{"react":273}],298:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28787,7 +28820,7 @@ var Progress = function (_React$Component) {
 
 exports.default = Progress;
 
-},{"react":273}],298:[function(require,module,exports){
+},{"react":273}],299:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28810,6 +28843,8 @@ var _index2 = _interopRequireDefault(_index);
 
 var _actions = require('../../actions/actions');
 
+var _common = require('../../common/common');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -28828,11 +28863,7 @@ var Question = function (_React$Component) {
 
     _this.next = _this.next.bind(_this);
     _this.submit = _this.submit.bind(_this);
-    _this.findQuizById = _this.findQuizById.bind(_this);
     _this.findQuestionById = _this.findQuestionById.bind(_this);
-    _this.getQuizIcon = _this.getQuizIcon.bind(_this);
-    _this.getQuizTitle = _this.getQuizTitle.bind(_this);
-    _this.getQuestionCount = _this.getQuestionCount.bind(_this);
     _this.getQuestionTitle = _this.getQuestionTitle.bind(_this);
     _this.getCorrectAnswers = _this.getCorrectAnswers.bind(_this);
     _this.setResult = _this.setResult.bind(_this);
@@ -28855,34 +28886,12 @@ var Question = function (_React$Component) {
       Prism.highlightAll();
     }
   }, {
-    key: 'findQuizById',
-    value: function findQuizById(id) {
-      return _quizes.quizes.find(function (x) {
-        return x.id === id;
-      });
-    }
-  }, {
     key: 'findQuestionById',
     value: function findQuestionById(id) {
-      var quiz = this.findQuizById(this.quizId);
+      var quiz = (0, _common.findQuizById)(_quizes.quizes, this.quizId);
       return quiz.questions.find(function (x) {
         return x.id === id;
       });
-    }
-  }, {
-    key: 'getQuizIcon',
-    value: function getQuizIcon(quiz) {
-      return quiz.icon;
-    }
-  }, {
-    key: 'getQuizTitle',
-    value: function getQuizTitle(quiz) {
-      return quiz.title;
-    }
-  }, {
-    key: 'getQuestionCount',
-    value: function getQuestionCount(quiz) {
-      return quiz.questions.length;
     }
   }, {
     key: 'getQuestionTitle',
@@ -28900,6 +28909,7 @@ var Question = function (_React$Component) {
       this.setState({ questionId: this.state.questionId + 1, isSubmitted: false });
       document.querySelectorAll('.question__input').forEach(function (checkbox) {
         checkbox.checked = false;
+        checkbox.disabled = false;
         checkbox.classList.remove("question__input--correct");
         checkbox.classList.remove("question__input--wrong");
       });
@@ -28921,7 +28931,7 @@ var Question = function (_React$Component) {
     value: function submit(question) {
       var _this2 = this;
 
-      var questionCount = this.getQuestionCount(this.findQuizById(this.quizId));
+      var questionCount = (0, _common.getQuestionCount)((0, _common.findQuizById)(_quizes.quizes, this.quizId));
       if (this.state.questionId + 1 === questionCount) {
         this.setState({ isLast: true });
       }
@@ -28929,6 +28939,7 @@ var Question = function (_React$Component) {
       var checkboxes = document.querySelectorAll('.question__input');
       var checked = [];
       for (var i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].disabled = true;
         if (checkboxes[i].checked) {
           checked.push(i);
         }
@@ -28961,19 +28972,13 @@ var Question = function (_React$Component) {
     value: function render() {
       var _this3 = this;
 
-      var quiz = this.findQuizById(this.quizId);
+      var quiz = (0, _common.findQuizById)(_quizes.quizes, this.quizId);
 
       var question = this.findQuestionById(this.state.questionId);
 
       var button = null;
       if (this.state.isSubmitted) {
         if (this.state.isLast) {
-
-          var finalResult = Math.round(_index2.default.getState().quizes.find(function (x) {
-            return x.quizId === _this3.quizId;
-          }).result * 100 / this.getQuestionCount(quiz));
-          this.setResult(finalResult);
-
           button = _react2.default.createElement(
             _reactRouter.Link,
             { to: '/source/result', role: 'button', className: 'question__button' },
@@ -28999,11 +29004,11 @@ var Question = function (_React$Component) {
       return _react2.default.createElement(
         'div',
         { className: 'question' },
-        _react2.default.createElement('img', { className: 'quiz__icon', src: 'images/' + this.getQuizIcon(quiz), alt: 'quiz icon' }),
+        _react2.default.createElement('img', { className: 'quiz__icon', src: 'images/' + (0, _common.getQuizIcon)(quiz), alt: 'quiz icon' }),
         _react2.default.createElement(
           'h2',
           { className: 'quiz__title' },
-          this.getQuizTitle(quiz)
+          (0, _common.getQuizTitle)(quiz)
         ),
         _react2.default.createElement(
           'p',
@@ -29011,7 +29016,7 @@ var Question = function (_React$Component) {
           'Question ',
           this.state.questionId + 1,
           '/',
-          this.getQuestionCount(quiz)
+          (0, _common.getQuestionCount)(quiz)
         ),
         _react2.default.createElement('div', { className: 'question__title language-javascript',
           dangerouslySetInnerHTML: { __html: this.getQuestionTitle(question) } }),
@@ -29041,7 +29046,7 @@ var Question = function (_React$Component) {
 
 exports.default = Question;
 
-},{"../../actions/actions":295,"../../js/quizes":304,"../../store/index":308,"react":273,"react-router":221}],299:[function(require,module,exports){
+},{"../../actions/actions":295,"../../common/common":296,"../../js/quizes":305,"../../store/index":309,"react":273,"react-router":221}],300:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29069,6 +29074,10 @@ var _actions = require("../../actions/actions");
 var _index = require("../../store/index");
 
 var _index2 = _interopRequireDefault(_index);
+
+var _common = require("../../common/common");
+
+var _quizes = require("../../js/quizes");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29157,9 +29166,9 @@ var Quiz = function (_React$Component) {
           this.props.questions,
           " questions"
         ),
-        _react2.default.createElement(_Progress2.default, { progress: _index2.default.getState().quizes.find(function (x) {
+        _react2.default.createElement(_Progress2.default, { progress: (0, _common.countPercentResult)(_index2.default.getState().quizes.find(function (x) {
             return x.quizId === _this2.props.id;
-          }).result }),
+          }).result, (0, _common.getQuestionCount)((0, _common.findQuizById)(_quizes.quizes, this.props.id))) }),
         _react2.default.createElement(
           "div",
           { className: "quiz__overlay" },
@@ -29180,7 +29189,7 @@ var Quiz = function (_React$Component) {
 
 exports.default = Quiz;
 
-},{"../../actions/actions":295,"../../store/index":308,"../progress/Progress":297,"../share/Share":302,"react":273,"react-router":221}],300:[function(require,module,exports){
+},{"../../actions/actions":295,"../../common/common":296,"../../js/quizes":305,"../../store/index":309,"../progress/Progress":298,"../share/Share":303,"react":273,"react-router":221}],301:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29254,7 +29263,7 @@ var Quizes = function (_React$Component) {
 
 exports.default = Quizes;
 
-},{"../../js/quizes":304,"../quiz/Quiz":299,"react":273}],301:[function(require,module,exports){
+},{"../../js/quizes":305,"../quiz/Quiz":300,"react":273}],302:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29283,6 +29292,8 @@ var _index = require('../../store/index');
 
 var _index2 = _interopRequireDefault(_index);
 
+var _common = require('../../common/common');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -29299,55 +29310,25 @@ var Result = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Result.__proto__ || Object.getPrototypeOf(Result)).call(this, props));
 
-    _this.findQuizById = _this.findQuizById.bind(_this);
-    _this.findQuestionById = _this.findQuestionById.bind(_this);
-    _this.getQuizIcon = _this.getQuizIcon.bind(_this);
-    _this.getQuizTitle = _this.getQuizTitle.bind(_this);
-
     _this.quizId = _index2.default.getState().quizId;
     return _this;
   }
 
   _createClass(Result, [{
-    key: 'findQuizById',
-    value: function findQuizById(id) {
-      return _quizes.quizes.find(function (x) {
-        return x.id === id;
-      });
-    }
-  }, {
-    key: 'findQuestionById',
-    value: function findQuestionById(id) {
-      var quiz = this.findQuizById(this.quizId);
-      return quiz.questions.find(function (x) {
-        return x.id === id;
-      });
-    }
-  }, {
-    key: 'getQuizIcon',
-    value: function getQuizIcon(quiz) {
-      return quiz.icon;
-    }
-  }, {
-    key: 'getQuizTitle',
-    value: function getQuizTitle(quiz) {
-      return quiz.title;
-    }
-  }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
-      var quiz = this.findQuizById(this.quizId);
+      var quiz = (0, _common.findQuizById)(_quizes.quizes, this.quizId);
 
       return _react2.default.createElement(
         'div',
         { className: 'result' },
-        _react2.default.createElement('img', { className: 'quiz__icon', src: 'images/' + this.getQuizIcon(quiz), alt: 'quiz icon' }),
+        _react2.default.createElement('img', { className: 'quiz__icon', src: 'images/' + (0, _common.getQuizIcon)(quiz), alt: 'quiz icon' }),
         _react2.default.createElement(
           'h2',
           { className: 'quiz__title' },
-          this.getQuizTitle(quiz)
+          (0, _common.getQuizTitle)(quiz)
         ),
         _react2.default.createElement(
           'div',
@@ -29357,9 +29338,9 @@ var Result = function (_React$Component) {
             { className: 'result__title' },
             'Your result'
           ),
-          _react2.default.createElement(_Progress2.default, { progress: _index2.default.getState().quizes.find(function (x) {
+          _react2.default.createElement(_Progress2.default, { progress: (0, _common.countPercentResult)(_index2.default.getState().quizes.find(function (x) {
               return x.quizId === _this2.quizId;
-            }).result }),
+            }).result, (0, _common.getQuestionCount)(quiz)) }),
           _react2.default.createElement(_Share2.default, null)
         ),
         _react2.default.createElement(
@@ -29376,7 +29357,7 @@ var Result = function (_React$Component) {
 
 exports.default = Result;
 
-},{"../../js/quizes":304,"../../store/index":308,"../progress/Progress":297,"../share/Share":302,"react":273,"react-router":221}],302:[function(require,module,exports){
+},{"../../common/common":296,"../../js/quizes":305,"../../store/index":309,"../progress/Progress":298,"../share/Share":303,"react":273,"react-router":221}],303:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29433,7 +29414,7 @@ var Share = function (_React$Component) {
 
 exports.default = Share;
 
-},{"react":273}],303:[function(require,module,exports){
+},{"react":273}],304:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -29563,7 +29544,7 @@ Prism.languages.clike = { comment: [{ pattern: /(^|[^\\])\/\*[\s\S]*?\*\//, look
 Prism.languages.javascript = Prism.languages.extend("clike", { keyword: /\b(as|async|await|break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|let|new|null|of|package|private|protected|public|return|set|static|super|switch|this|throw|try|typeof|var|void|while|with|yield)\b/, number: /\b-?(0x[\dA-Fa-f]+|0b[01]+|0o[0-7]+|\d*\.?\d+([Ee][+-]?\d+)?|NaN|Infinity)\b/, "function": /[_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*(?=\()/i, operator: /-[-=]?|\+[+=]?|!=?=?|<<?=?|>>?>?=?|=(?:==?|>)?|&[&=]?|\|[|=]?|\*\*?=?|\/=?|~|\^=?|%=?|\?|\.{3}/ }), Prism.languages.insertBefore("javascript", "keyword", { regex: { pattern: /(^|[^\/])\/(?!\/)(\[.+?]|\\.|[^\/\\\r\n])+\/[gimyu]{0,5}(?=\s*($|[\r\n,.;})]))/, lookbehind: !0, greedy: !0 } }), Prism.languages.insertBefore("javascript", "string", { "template-string": { pattern: /`(?:\\\\|\\?[^\\])*?`/, greedy: !0, inside: { interpolation: { pattern: /\$\{[^}]+\}/, inside: { "interpolation-punctuation": { pattern: /^\$\{|\}$/, alias: "punctuation" }, rest: Prism.languages.javascript } }, string: /[\s\S]+/ } } }), Prism.languages.markup && Prism.languages.insertBefore("markup", "tag", { script: { pattern: /(<script[\s\S]*?>)[\s\S]*?(?=<\/script>)/i, lookbehind: !0, inside: Prism.languages.javascript, alias: "language-javascript" } }), Prism.languages.js = Prism.languages.javascript;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],304:[function(require,module,exports){
+},{}],305:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29623,7 +29604,7 @@ var quizes = exports.quizes = [{
   }]
 }];
 
-},{}],305:[function(require,module,exports){
+},{}],306:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -29661,7 +29642,7 @@ _reactDom2.default.render(_react2.default.createElement(
   _react2.default.createElement(_reactRouter.Router, { history: _reactRouter.browserHistory, routes: _routes.routes })
 ), document.getElementById('root'));
 
-},{"./routes":306,"react":273,"react-dom":39,"react-redux":176,"react-router":221,"redux":279}],306:[function(require,module,exports){
+},{"./routes":307,"react":273,"react-dom":39,"react-redux":176,"react-router":221,"redux":279}],307:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29708,7 +29689,7 @@ var routes = exports.routes = _react2.default.createElement(
   )
 );
 
-},{"../components/app/App":296,"../components/question/Question":298,"../components/quizes/Quizes":300,"../components/result/Result":301,"react":273,"react-router":221}],307:[function(require,module,exports){
+},{"../components/app/App":297,"../components/question/Question":299,"../components/quizes/Quizes":301,"../components/result/Result":302,"react":273,"react-router":221}],308:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29772,7 +29753,7 @@ function quizApp() {
   }
 }
 
-},{}],308:[function(require,module,exports){
+},{}],309:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29791,4 +29772,4 @@ var store = (0, _redux.createStore)(_reducers2.default, window.__REDUX_DEVTOOLS_
 
 exports.default = store;
 
-},{"../reducers/reducers":307,"redux":279}]},{},[295,296,297,298,299,300,301,302,303,304,305,306,307,308]);
+},{"../reducers/reducers":308,"redux":279}]},{},[295,296,297,298,299,300,301,302,303,304,305,306,307,308,309]);

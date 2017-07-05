@@ -58,13 +58,6 @@
     line-height: 1.5;
     padding-right: 20px;
 
-    //&__correct{
-    //  background: $green;
-    //}
-    //
-    //&__wrong{
-    //  background: $red;
-    //}
 
     &:before {
       content: '';
@@ -97,6 +90,7 @@
     &:hover {
       background: $dark-blue-hover;
     }
+
 
   }
 }

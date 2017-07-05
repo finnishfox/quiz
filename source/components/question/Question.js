@@ -3,18 +3,14 @@ import {quizes} from '../../js/quizes';
 import {Link} from 'react-router';
 import store from '../../store/index';
 import {setResult} from '../../actions/actions';
-
+import {findQuizById,findQuestionById,getQuizIcon,getQuizTitle,getQuestionCount} from '../../common/common';
 class Question extends React.Component {
   constructor() {
     super();
 
     this.next = this.next.bind(this);
     this.submit = this.submit.bind(this);
-    this.findQuizById = this.findQuizById.bind(this);
     this.findQuestionById = this.findQuestionById.bind(this);
-    this.getQuizIcon = this.getQuizIcon.bind(this);
-    this.getQuizTitle = this.getQuizTitle.bind(this);
-    this.getQuestionCount = this.getQuestionCount.bind(this);
     this.getQuestionTitle = this.getQuestionTitle.bind(this);
     this.getCorrectAnswers = this.getCorrectAnswers.bind(this);
     this.setResult = this.setResult.bind(this);
@@ -22,7 +18,6 @@ class Question extends React.Component {
     this.state = {isSubmitted: false, questionId: 0, isLast: false};
 
     this.quizId = store.getState().quizId;
-
 
   }
 
@@ -34,27 +29,11 @@ class Question extends React.Component {
     Prism.highlightAll();
   }
 
-  findQuizById(id) {
-    return quizes.find(x => x.id === id);
-  }
-
   findQuestionById(id) {
-    let quiz = this.findQuizById(this.quizId);
+    let quiz = findQuizById(quizes, this.quizId);
     return quiz.questions.find(x => x.id === id);
   }
 
-  getQuizIcon(quiz) {
-    return quiz.icon;
-  }
-
-
-  getQuizTitle(quiz) {
-    return quiz.title;
-  }
-
-  getQuestionCount(quiz) {
-    return quiz.questions.length;
-  }
 
   getQuestionTitle(question) {
     return question.question;
@@ -69,6 +48,7 @@ class Question extends React.Component {
     this.setState({questionId: this.state.questionId + 1, isSubmitted: false});
     document.querySelectorAll('.question__input').forEach(checkbox => {
       checkbox.checked = false;
+      checkbox.disabled = false;
       checkbox.classList.remove("question__input--correct");
       checkbox.classList.remove("question__input--wrong");
     });
@@ -87,8 +67,10 @@ class Question extends React.Component {
   }
 
 
+
+
   submit(question) {
-    let questionCount = this.getQuestionCount(this.findQuizById(this.quizId));
+    let questionCount = getQuestionCount(findQuizById(quizes, this.quizId));
     if (this.state.questionId + 1 === questionCount) {
       this.setState({isLast: true});
     }
@@ -96,6 +78,7 @@ class Question extends React.Component {
     let checkboxes = document.querySelectorAll('.question__input');
     let checked = [];
     for (let i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].disabled = true;
       if (checkboxes[i].checked) {
         checked.push(i);
       }
@@ -124,18 +107,13 @@ class Question extends React.Component {
 
 
   render() {
-    let quiz = this.findQuizById(this.quizId);
+    let quiz = findQuizById(quizes, this.quizId);
 
     let question = this.findQuestionById(this.state.questionId);
 
     let button = null;
     if (this.state.isSubmitted) {
       if (this.state.isLast) {
-
-        let finalResult = Math.round(store.getState().quizes.find(x => x.quizId === this.quizId).result * 100
-          / this.getQuestionCount(quiz));
-        this.setResult(finalResult);
-
         button = <Link to='/source/result' role="button" className="question__button">Show results</Link>
       } else {
         button = <button type="button" className="question__button" onClick={this.next}>Next</button>
@@ -146,9 +124,9 @@ class Question extends React.Component {
 
     return (
       <div className="question">
-        <img className="quiz__icon" src={'images/' + this.getQuizIcon(quiz)} alt="quiz icon"/>
-        <h2 className="quiz__title">{this.getQuizTitle(quiz)}</h2>
-        <p className="quiz__questions-count">Question {this.state.questionId + 1}/{this.getQuestionCount(quiz)}</p>
+        <img className="quiz__icon" src={'images/' + getQuizIcon(quiz)} alt="quiz icon"/>
+        <h2 className="quiz__title">{getQuizTitle(quiz)}</h2>
+        <p className="quiz__questions-count">Question {this.state.questionId + 1}/{getQuestionCount(quiz)}</p>
 
         <div className="question__title language-javascript"
              dangerouslySetInnerHTML={{__html: this.getQuestionTitle(question)}}/>

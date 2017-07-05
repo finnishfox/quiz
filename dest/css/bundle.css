@@ -9,6 +9,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
 }
 
 .progress__circle {
@@ -23,6 +24,8 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  left: 0;
+  right: 0;
 }
 .question {
   margin: 40px;
@@ -269,11 +272,6 @@
 .result__wrapper .progress {
   position: relative;
   bottom: auto;
-}
-
-.result__wrapper .progress__value {
-  left: 0;
-  right: 0;
 }
 
 .result .share {
