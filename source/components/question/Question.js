@@ -1,7 +1,7 @@
 import React from 'react';
 import {quizes} from '../../js/quizes';
 import {Link} from 'react-router';
-import store from '../../store/index';
+import {store} from '../../js/root';
 import {setResult} from '../../actions/actions';
 import {findQuizById,findQuestionById,getQuizIcon,getQuizTitle,getQuestionCount} from '../../common/common';
 class Question extends React.Component {

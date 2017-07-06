@@ -6,7 +6,6 @@ import Quizes from "../components/quizes/Quizes";
 import Result from "../components/result/Result";
 
 
-
 export const routes = (
   <div>
     <Route path='/source' component={App}>

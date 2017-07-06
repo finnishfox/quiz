@@ -28837,9 +28837,7 @@ var _quizes = require('../../js/quizes');
 
 var _reactRouter = require('react-router');
 
-var _index = require('../../store/index');
-
-var _index2 = _interopRequireDefault(_index);
+var _root = require('../../js/root');
 
 var _actions = require('../../actions/actions');
 
@@ -28870,7 +28868,7 @@ var Question = function (_React$Component) {
 
     _this.state = { isSubmitted: false, questionId: 0, isLast: false };
 
-    _this.quizId = _index2.default.getState().quizId;
+    _this.quizId = _root.store.getState().quizId;
 
     return _this;
   }
@@ -28924,7 +28922,7 @@ var Question = function (_React$Component) {
   }, {
     key: 'setResult',
     value: function setResult(result) {
-      _index2.default.dispatch((0, _actions.setResult)(this.quizId, result));
+      _root.store.dispatch((0, _actions.setResult)(this.quizId, result));
     }
   }, {
     key: 'submit',
@@ -28953,7 +28951,7 @@ var Question = function (_React$Component) {
       if (checked.length === correctAnswers.length && checked.every(function (v, i) {
         return v === correctAnswers[i];
       })) {
-        this.setResult(_index2.default.getState().quizes.find(function (x) {
+        this.setResult(_root.store.getState().quizes.find(function (x) {
           return x.quizId === _this2.quizId;
         }).result + 1);
       }
@@ -29046,7 +29044,7 @@ var Question = function (_React$Component) {
 
 exports.default = Question;
 
-},{"../../actions/actions":295,"../../common/common":296,"../../js/quizes":305,"../../store/index":309,"react":273,"react-router":221}],300:[function(require,module,exports){
+},{"../../actions/actions":295,"../../common/common":296,"../../js/quizes":305,"../../js/root":306,"react":273,"react-router":221}],300:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29071,9 +29069,7 @@ var _reactRouter = require("react-router");
 
 var _actions = require("../../actions/actions");
 
-var _index = require("../../store/index");
-
-var _index2 = _interopRequireDefault(_index);
+var _root = require("../../js/root");
 
 var _common = require("../../common/common");
 
@@ -29111,15 +29107,15 @@ var Quiz = function (_React$Component) {
   }, {
     key: "startQuiz",
     value: function startQuiz(e) {
-      _index2.default.dispatch((0, _actions.setQuizId)(this.props.id));
-      _index2.default.dispatch((0, _actions.addQuiz)(this.props.id));
+      _root.store.dispatch((0, _actions.setQuizId)(this.props.id));
+      _root.store.dispatch((0, _actions.addQuiz)(this.props.id));
     }
   }, {
     key: "render",
     value: function render() {
       var _this2 = this;
 
-      if (_index2.default.getState().quizes.find(function (x) {
+      if (_root.store.getState().quizes.find(function (x) {
         return x.quizId === _this2.props.id;
       }) === undefined) {
         return _react2.default.createElement(
@@ -29166,7 +29162,7 @@ var Quiz = function (_React$Component) {
           this.props.questions,
           " questions"
         ),
-        _react2.default.createElement(_Progress2.default, { progress: (0, _common.countPercentResult)(_index2.default.getState().quizes.find(function (x) {
+        _react2.default.createElement(_Progress2.default, { progress: (0, _common.countPercentResult)(_root.store.getState().quizes.find(function (x) {
             return x.quizId === _this2.props.id;
           }).result, (0, _common.getQuestionCount)((0, _common.findQuizById)(_quizes.quizes, this.props.id))) }),
         _react2.default.createElement(
@@ -29189,7 +29185,7 @@ var Quiz = function (_React$Component) {
 
 exports.default = Quiz;
 
-},{"../../actions/actions":295,"../../common/common":296,"../../js/quizes":305,"../../store/index":309,"../progress/Progress":298,"../share/Share":303,"react":273,"react-router":221}],301:[function(require,module,exports){
+},{"../../actions/actions":295,"../../common/common":296,"../../js/quizes":305,"../../js/root":306,"../progress/Progress":298,"../share/Share":303,"react":273,"react-router":221}],301:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29288,9 +29284,7 @@ var _Share = require('../share/Share');
 
 var _Share2 = _interopRequireDefault(_Share);
 
-var _index = require('../../store/index');
-
-var _index2 = _interopRequireDefault(_index);
+var _root = require('../../js/root');
 
 var _common = require('../../common/common');
 
@@ -29310,7 +29304,7 @@ var Result = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (Result.__proto__ || Object.getPrototypeOf(Result)).call(this, props));
 
-    _this.quizId = _index2.default.getState().quizId;
+    _this.quizId = _root.store.getState().quizId;
     return _this;
   }
 
@@ -29338,7 +29332,7 @@ var Result = function (_React$Component) {
             { className: 'result__title' },
             'Your result'
           ),
-          _react2.default.createElement(_Progress2.default, { progress: (0, _common.countPercentResult)(_index2.default.getState().quizes.find(function (x) {
+          _react2.default.createElement(_Progress2.default, { progress: (0, _common.countPercentResult)(_root.store.getState().quizes.find(function (x) {
               return x.quizId === _this2.quizId;
             }).result, (0, _common.getQuestionCount)(quiz)) }),
           _react2.default.createElement(_Share2.default, null)
@@ -29357,7 +29351,7 @@ var Result = function (_React$Component) {
 
 exports.default = Result;
 
-},{"../../common/common":296,"../../js/quizes":305,"../../store/index":309,"../progress/Progress":298,"../share/Share":303,"react":273,"react-router":221}],303:[function(require,module,exports){
+},{"../../common/common":296,"../../js/quizes":305,"../../js/root":306,"../progress/Progress":298,"../share/Share":303,"react":273,"react-router":221}],303:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29607,13 +29601,16 @@ var quizes = exports.quizes = [{
 },{}],306:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.store = undefined;
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
 var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _reactRouter = require('react-router');
 
@@ -29623,26 +29620,32 @@ var _redux = require('redux');
 
 var _reactRedux = require('react-redux');
 
+var _reducers = require('../reducers/reducers');
+
+var _reducers2 = _interopRequireDefault(_reducers);
+
+var _localStorage = require('../localStorage/localStorage');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-// import App from '../components/app/App'
-//
-// ReactDOM.render(<App />, document.getElementById("root"));
-//
-//
+var persistedState = (0, _localStorage.loadState)();
 
+var store = exports.store = (0, _redux.createStore)(_reducers2.default, persistedState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
-var store = (0, _redux.createStore)(function () {}, {});
+store.subscribe(function () {
+  console.log(store.getState());
+  (0, _localStorage.saveState)({
+    quizes: store.getState().quizes
+  });
+});
 
-_reactDom2.default.render(_react2.default.createElement(
+(0, _reactDom.render)(_react2.default.createElement(
   _reactRedux.Provider,
   { store: store },
   _react2.default.createElement(_reactRouter.Router, { history: _reactRouter.browserHistory, routes: _routes.routes })
 ), document.getElementById('root'));
 
-},{"./routes":307,"react":273,"react-dom":39,"react-redux":176,"react-router":221,"redux":279}],307:[function(require,module,exports){
+},{"../localStorage/localStorage":308,"../reducers/reducers":309,"./routes":307,"react":273,"react-dom":39,"react-redux":176,"react-router":221,"redux":279}],307:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29690,6 +29693,34 @@ var routes = exports.routes = _react2.default.createElement(
 );
 
 },{"../components/app/App":297,"../components/question/Question":299,"../components/quizes/Quizes":301,"../components/result/Result":302,"react":273,"react-router":221}],308:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var loadState = exports.loadState = function loadState() {
+  try {
+    var serializedState = localStorage.getItem('state');
+    if (serializedState === null) {
+      return undefined;
+    }
+    return JSON.parse(serializedState);
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  }
+};
+
+var saveState = exports.saveState = function saveState(state) {
+  try {
+    var serializedState = JSON.stringify(state);
+    localStorage.setItem('state', serializedState);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+},{}],309:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29753,23 +29784,4 @@ function quizApp() {
   }
 }
 
-},{}],309:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _redux = require('redux');
-
-var _reducers = require('../reducers/reducers');
-
-var _reducers2 = _interopRequireDefault(_reducers);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var store = (0, _redux.createStore)(_reducers2.default, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-
-exports.default = store;
-
-},{"../reducers/reducers":308,"redux":279}]},{},[295,296,297,298,299,300,301,302,303,304,305,306,307,308,309]);
+},{}]},{},[295,296,297,298,299,300,301,302,303,304,305,306,307,308,309]);

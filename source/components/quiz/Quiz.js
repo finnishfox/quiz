@@ -2,9 +2,9 @@ import React from 'react';
 import Share from "../share/Share";
 import Progress from "../progress/Progress";
 import {Link} from 'react-router';
-import {setQuizId,addQuiz} from '../../actions/actions';
-import store from '../../store/index';
-import {findQuizById,getQuestionCount,countPercentResult} from '../../common/common';
+import {setQuizId, addQuiz} from '../../actions/actions';
+import {store} from '../../js/root';
+import {findQuizById, getQuestionCount, countPercentResult} from '../../common/common';
 import {quizes} from '../../js/quizes';
 
 
@@ -26,6 +26,7 @@ class Quiz extends React.Component {
   startQuiz(e) {
     store.dispatch(setQuizId(this.props.id));
     store.dispatch(addQuiz(this.props.id));
+
   }
 
 
@@ -43,7 +44,6 @@ class Quiz extends React.Component {
     }
 
 
-
     return (
       <div className="quiz">
         <button className="quiz__toggle-button" onClick={this.toggleOverlay}/>
@@ -51,7 +51,7 @@ class Quiz extends React.Component {
         <h2 className="quiz__title">{this.props.title}</h2>
         <p className="quiz__questions-count">{this.props.questions} questions</p>
         <Progress progress={countPercentResult(store.getState().quizes.find(x => x.quizId === this.props.id).result,
-          getQuestionCount(findQuizById(quizes,this.props.id)))}/>
+          getQuestionCount(findQuizById(quizes, this.props.id)))}/>
         <div className="quiz__overlay">
           <Link to='/source/quiz' role="button" className="quiz__button quiz__button--v-centered"
                 onClick={this.startQuiz}>Try again</Link>

@@ -3,7 +3,7 @@ import {quizes} from '../../js/quizes';
 import Progress from "../progress/Progress";
 import {Link} from 'react-router';
 import Share from "../share/Share";
-import store from '../../store/index';
+import {store} from '../../js/root';
 import {findQuizById,getQuizIcon,getQuizTitle,getQuestionCount,countPercentResult} from '../../common/common';
 
 class Result extends React.Component {

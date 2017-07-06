@@ -231,7 +231,8 @@
   margin: 0 40px;
   display: grid;
   grid-gap: 40px;
-  grid-template-columns: repeat(auto-fill, 320px);
+  grid-template-columns: repeat(auto-fit, 320px);
+  justify-content: center;
 }
 
 .quizes__title {
