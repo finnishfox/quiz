@@ -1,6 +1,7 @@
 import React from 'react';
 import Quiz from "../quiz/Quiz";
 import {quizes} from '../../js/quizes';
+import './quizes.scss';
 
 
 class Quizes extends React.Component {

@@ -4,6 +4,8 @@ import {Link} from 'react-router';
 import {store} from '../../js/root';
 import {setResult} from '../../actions/actions';
 import {findQuizById,findQuestionById,getQuizIcon,getQuizTitle,getQuestionCount} from '../../common/common';
+import './question.scss';
+
 class Question extends React.Component {
   constructor() {
     super();

@@ -17,6 +17,10 @@
     transform: rotate(-90deg);
   }
 
+  &__filled-circle {
+    animation: progress 2s;
+  }
+
   &__value {
     font-family: $open-sans;
     font-weight: bold;
@@ -28,5 +32,11 @@
     left: 0;
     right: 0;
 
+  }
+}
+
+@keyframes progress {
+  from {
+    stroke-dashoffset: 471;
   }
 }

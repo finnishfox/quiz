@@ -1,12 +1,12 @@
 import React from 'react';
-
+import './progress.scss';
 class Progress extends React.Component {
   constructor() {
     super();
   }
 
   getOffset() {
-    return 471 * (1 - this.props.progress / 100);
+    return Math.round(471 * (1 - this.props.progress / 100));
   }
 
   render() {
@@ -21,12 +21,11 @@ class Progress extends React.Component {
           </defs>
           <circle cx="75" cy="75" r="67.5"
                   fill="none" stroke="#D2EFEB" strokeWidth="10px"/>
-          <circle cx="75" cy="75" r="67.5"
+          <circle className="progress__filled-circle" cx="75" cy="75" r="67.5"
                   fill="none" stroke="url(#gradient)" strokeWidth="15px" strokeLinecap="round"
                   strokeDasharray="471 471" strokeDashoffset={this.getOffset()}/>
         </svg>
         <p className="progress__value">{this.props.progress}%</p>
-
       </div>
     );
   }

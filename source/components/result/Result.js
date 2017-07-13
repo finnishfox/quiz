@@ -5,6 +5,7 @@ import {Link} from 'react-router';
 import Share from "../share/Share";
 import {store} from '../../js/root';
 import {findQuizById,getQuizIcon,getQuizTitle,getQuestionCount,countPercentResult} from '../../common/common';
+import './result.scss';
 
 class Result extends React.Component {
   constructor(props) {

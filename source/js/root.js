@@ -13,7 +13,6 @@ export const store = createStore(quizApp, persistedState, window.__REDUX_DEVTOOL
 
 
 store.subscribe(() => {
-  console.log(store.getState());
   saveState(
     {
       quizes: store.getState().quizes

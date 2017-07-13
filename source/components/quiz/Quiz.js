@@ -7,6 +7,7 @@ import {store} from '../../js/root';
 import {findQuizById, getQuestionCount, countPercentResult} from '../../common/common';
 import {quizes} from '../../js/quizes';
 
+import './quiz.scss';
 
 class Quiz extends React.Component {
   constructor(props) {
