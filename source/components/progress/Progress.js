@@ -1,9 +1,6 @@
 import React from 'react';
 import './progress.scss';
 class Progress extends React.Component {
-  constructor() {
-    super();
-  }
 
   getOffset() {
     return Math.round(471 * (1 - this.props.progress / 100));
@@ -11,7 +8,7 @@ class Progress extends React.Component {
 
   render() {
     return (
-      <div className="progress">
+      <div className={`progress ${this.props.className ? this.props.className : ''}`}>
         <svg className="progress__circle" width="150" height="150" viewBox="0 0 150 150">
           <defs>
             <linearGradient id="gradient">

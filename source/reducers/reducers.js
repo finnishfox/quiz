@@ -10,6 +10,9 @@ export default function quizApp(state = initialState, action) {
         quizId: action.quizId
       });
 
+      // return {...state, ...{quizId: action.quizId}};
+
+
     case 'ADD_QUIZ':
       if (state.quizes.find(x => x.quizId === action.quizId)) {
         return Object.assign({}, state, {

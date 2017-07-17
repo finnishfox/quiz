@@ -21,19 +21,20 @@
     right: 0;
     text-align: center;
 
-    .progress {
-      position: relative;
-      bottom: auto;
-
-    }
   }
-  .share {
+
+  &__progress {
+    position: relative;
+    bottom: auto;
+  }
+
+  &__share {
     position: static;
     display: inline-block;
     margin-top: 40px;
 
-    &__title,
-    &__icon {
+    .share__title,
+    .share__icon {
       color: $dark-blue;
     }
   }

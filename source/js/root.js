@@ -1,11 +1,11 @@
 import React from 'react';
 import {render} from 'react-dom'
-import {Router, browserHistory} from 'react-router';
-import {routes} from './routes';
 import {createStore} from 'redux';
 import {Provider} from 'react-redux';
 import quizApp from '../reducers/reducers';
-import {loadState, saveState} from '../localStorage/localStorage'
+import {loadState, saveState} from '../localStorage/localStorage';
+import App from "../components/app/App";
+
 
 const persistedState = loadState();
 
@@ -14,15 +14,13 @@ export const store = createStore(quizApp, persistedState, window.__REDUX_DEVTOOL
 
 store.subscribe(() => {
   saveState(
-    {
-      quizes: store.getState().quizes
-    }
+    store.getState()
   );
 });
 
 render(
   <Provider store={store}>
-    <Router history={browserHistory} routes={routes}/>
+    <App/>
   </Provider>,
   document.getElementById('root')
 );

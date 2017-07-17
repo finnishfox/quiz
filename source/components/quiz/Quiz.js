@@ -1,11 +1,12 @@
 import React from 'react';
 import Share from "../share/Share";
 import Progress from "../progress/Progress";
-import {Link} from 'react-router';
 import {setQuizId, addQuiz} from '../../actions/actions';
 import {store} from '../../js/root';
 import {findQuizById, getQuestionCount, countPercentResult} from '../../common/common';
 import {quizes} from '../../js/quizes';
+
+import {Link} from 'react-router-dom';
 
 import './quiz.scss';
 
@@ -18,16 +19,16 @@ class Quiz extends React.Component {
   }
 
 
-  toggleOverlay(e) {
-    const overlay = e.currentTarget.parentElement.querySelector('.quiz__overlay');
+  toggleOverlay(event) {
+    const element = event.currentTarget;
+    const overlay = element.parentElement.querySelector('.quiz__overlay');
     overlay.classList.toggle('quiz__overlay--open');
-    e.currentTarget.classList.toggle('quiz__toggle-button--open');
+    element.classList.toggle('quiz__toggle-button--open');
   }
 
-  startQuiz(e) {
+  startQuiz() {
     store.dispatch(setQuizId(this.props.id));
     store.dispatch(addQuiz(this.props.id));
-
   }
 
 
@@ -39,7 +40,7 @@ class Quiz extends React.Component {
           <h2 className="quiz__title">{this.props.title}</h2>
           <p className="quiz__questions-count">{this.props.questions} questions</p>
           <p className="quiz__description">{this.props.description}</p>
-          <Link to='/source/quiz' role="button" className="quiz__button" onClick={this.startQuiz}>Start</Link>
+          <Link to='/quiz' role="button" className="quiz__button" onClick={this.startQuiz}>Start</Link>
         </div>
       );
     }
@@ -54,7 +55,7 @@ class Quiz extends React.Component {
         <Progress progress={countPercentResult(store.getState().quizes.find(x => x.quizId === this.props.id).result,
           getQuestionCount(findQuizById(quizes, this.props.id)))}/>
         <div className="quiz__overlay">
-          <Link to='/source/quiz' role="button" className="quiz__button quiz__button--v-centered"
+          <Link to='/quiz' role="button" className="quiz__button quiz__button--vertically-centered"
                 onClick={this.startQuiz}>Try again</Link>
           <Share/>
         </div>

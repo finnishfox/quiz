@@ -1,8 +1,8 @@
-export function setQuizId(id) {
+export function setQuizId(quizId) {
 
   return {
     type: 'SET_QUIZ_ID',
-    quizId: id
+    quizId,
   }
 
 }

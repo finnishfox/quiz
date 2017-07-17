@@ -1,9 +1,9 @@
 import React from 'react';
 import {quizes} from '../../js/quizes';
-import {Link} from 'react-router';
+import {Link} from 'react-router-dom';
 import {store} from '../../js/root';
 import {setResult} from '../../actions/actions';
-import {findQuizById,findQuestionById,getQuizIcon,getQuizTitle,getQuestionCount} from '../../common/common';
+import {findQuizById, findQuestionById, getQuizIcon, getQuizTitle, getQuestionCount} from '../../common/common';
 import './question.scss';
 
 class Question extends React.Component {
@@ -51,14 +51,15 @@ class Question extends React.Component {
     document.querySelectorAll('.question__input').forEach(checkbox => {
       checkbox.checked = false;
       checkbox.disabled = false;
-      checkbox.classList.remove("question__input--correct");
-      checkbox.classList.remove("question__input--wrong");
+      checkbox.classList.remove(
+        "question__input--correct",
+        "question__input--wrong"
+      );
     });
-
 
   }
 
-  diff(a, b) {
+  static diff(a, b) {
     return a.filter(function (i) {
       return b.indexOf(i) < 0;
     });
@@ -67,8 +68,6 @@ class Question extends React.Component {
   setResult(result) {
     store.dispatch(setResult(this.quizId, result));
   }
-
-
 
 
   submit(question) {
@@ -100,7 +99,7 @@ class Question extends React.Component {
     });
 
 
-    let wrongChecked = this.diff(checked, correctAnswers);
+    const wrongChecked = Question.diff(checked, correctAnswers);
     wrongChecked.forEach(checkbox => {
       checkboxes[checkbox].classList.add("question__input--wrong");
     });
@@ -116,7 +115,7 @@ class Question extends React.Component {
     let button = null;
     if (this.state.isSubmitted) {
       if (this.state.isLast) {
-        button = <Link to='/source/result' role="button" className="question__button">Show results</Link>
+        button = <Link to='/result' role="button" className="question__button">Show results</Link>
       } else {
         button = <button type="button" className="question__button" onClick={this.next}>Next</button>
       }
@@ -132,7 +131,7 @@ class Question extends React.Component {
 
         <div className="question__title language-javascript"
              dangerouslySetInnerHTML={{__html: this.getQuestionTitle(question)}}/>
-        <form>
+        <form action="/validate/">
           {question.answers.map(function (option, i) {
             return (<div key={i}>
               <input type="checkbox" className="question__input" id={'ans' + i}/>
