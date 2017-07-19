@@ -1,29 +1,25 @@
-export function setQuizId(quizId) {
+import {SET_QUIZ_ID, ADD_QUIZ, SET_RESULT} from './actionTypes';
 
+export function setQuizId(quizId) {
   return {
-    type: 'SET_QUIZ_ID',
+    type: SET_QUIZ_ID,
     quizId,
   }
-
 }
 
 export function addQuiz(id) {
-
   return {
-    type: 'ADD_QUIZ',
+    type: ADD_QUIZ,
     quizId: id,
     result: 0
   }
-
 }
 
 
-export function setResult(id,result) {
-
+export function setResult(id, result) {
   return {
-    type: 'SET_RESULT',
+    type: SET_RESULT,
     quizId: id,
     result: result
   }
-
 }
