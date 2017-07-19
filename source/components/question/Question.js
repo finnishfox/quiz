@@ -4,6 +4,7 @@ import {Link} from 'react-router-dom';
 import {store} from '../../js/root';
 import {setResult} from '../../actions/actions';
 import {findQuizById, findQuestionById, getQuizIcon, getQuizTitle, getQuestionCount} from '../../common/common';
+import {loadState, saveState} from '../../localStorage/localStorage';
 import './question.scss';
 
 class Question extends React.Component {
@@ -11,17 +12,48 @@ class Question extends React.Component {
     super();
 
     this.next = this.next.bind(this);
+    this.check = this.check.bind(this);
     this.submit = this.submit.bind(this);
     this.findQuestionById = this.findQuestionById.bind(this);
     this.getQuestionTitle = this.getQuestionTitle.bind(this);
     this.getCorrectAnswers = this.getCorrectAnswers.bind(this);
     this.setResult = this.setResult.bind(this);
 
-    this.state = {isSubmitted: false, questionId: 0, isLast: false};
-
     this.quizId = store.getState().quizId;
+    this.quiz = findQuizById(quizes, this.quizId);
+    this.questionCount = getQuestionCount(this.quiz);
+    this.redirectToResult = false;
 
+    let questionId;
+    let persistedState = loadState('question');
+    if (persistedState !== undefined) {
+      questionId = persistedState.questionId;
+      if (persistedState.isSubmitted) {
+        if (questionId + 1 < this.questionCount) {
+          questionId = questionId + 1;
+        } else {
+          this.redirectToResult = true;
+        }
+        saveState({
+          ...loadState('question'),
+          ...{questionId: questionId, isSubmitted: false}
+        }, 'question');
+      }
+    } else {
+      questionId = 0;
+      saveState({
+        questionId: questionId, isSubmitted: false
+      }, 'question');
+    }
+
+    this.state = {
+      isSubmitted: false,
+      isSubmitDisabled: true,
+      questionId: questionId,
+      isLast: false
+    };
   }
+
 
   componentDidMount() {
     Prism.highlightAll();
@@ -31,9 +63,13 @@ class Question extends React.Component {
     Prism.highlightAll();
   }
 
+  componentWillUnmount() {
+    localStorage.removeItem('question');
+  }
+
+
   findQuestionById(id) {
-    let quiz = findQuizById(quizes, this.quizId);
-    return quiz.questions.find(x => x.id === id);
+    return this.quiz.questions.find(x => x.id === id);
   }
 
 
@@ -47,7 +83,12 @@ class Question extends React.Component {
 
 
   next() {
-    this.setState({questionId: this.state.questionId + 1, isSubmitted: false});
+    this.setState({questionId: this.state.questionId + 1, isSubmitted: false, isSubmitDisabled: true}, function () {
+      saveState({
+        ...loadState('question'),
+        ...{questionId: this.state.questionId, isSubmitted: this.state.isSubmitted}
+      }, 'question');
+    });
     document.querySelectorAll('.question__input').forEach(checkbox => {
       checkbox.checked = false;
       checkbox.disabled = false;
@@ -56,7 +97,6 @@ class Question extends React.Component {
         "question__input--wrong"
       );
     });
-
   }
 
   static diff(a, b) {
@@ -69,13 +109,20 @@ class Question extends React.Component {
     store.dispatch(setResult(this.quizId, result));
   }
 
+  check(e) {
+    if (document.querySelectorAll('.question__input:checked').length > 0) {
+      this.setState({isSubmitDisabled: false});
+    } else {
+      this.setState({isSubmitDisabled: true});
+    }
+  }
+
 
   submit(question) {
-    let questionCount = getQuestionCount(findQuizById(quizes, this.quizId));
-    if (this.state.questionId + 1 === questionCount) {
+    if (this.state.questionId + 1 === this.questionCount) {
       this.setState({isLast: true});
     }
-    this.setState({isSubmitted: true});
+
     let checkboxes = document.querySelectorAll('.question__input');
     let checked = [];
     for (let i = 0; i < checkboxes.length; i++) {
@@ -98,17 +145,24 @@ class Question extends React.Component {
       checkboxes[answer].classList.add("question__input--correct");
     });
 
-
     const wrongChecked = Question.diff(checked, correctAnswers);
     wrongChecked.forEach(checkbox => {
       checkboxes[checkbox].classList.add("question__input--wrong");
     });
 
+    this.setState({isSubmitted: true}, function () {
+      saveState({...loadState('question'), ...{isSubmitted: this.state.isSubmitted}}, 'question');
+    });
   }
 
 
   render() {
-    let quiz = findQuizById(quizes, this.quizId);
+    if (this.redirectToResult) {
+      window.location.href = '/result';
+      localStorage.removeItem('question');
+      return null;
+    }
+
 
     let question = this.findQuestionById(this.state.questionId);
 
@@ -120,31 +174,29 @@ class Question extends React.Component {
         button = <button type="button" className="question__button" onClick={this.next}>Next</button>
       }
     } else {
-      button = <button type="button" className="question__button" onClick={() => this.submit(question)}>Submit</button>
+      button = <button type="button" disabled={this.state.isSubmitDisabled} className="question__button"
+                       onClick={() => this.submit(question)}>
+        Submit</button>
     }
 
     return (
       <div className="question">
-        <img className="quiz__icon" src={'images/' + getQuizIcon(quiz)} alt="quiz icon"/>
-        <h2 className="quiz__title">{getQuizTitle(quiz)}</h2>
-        <p className="quiz__questions-count">Question {this.state.questionId + 1}/{getQuestionCount(quiz)}</p>
-
+        <img className="quiz__icon" src={'images/' + getQuizIcon(this.quiz)} alt="quiz icon"/>
+        <h2 className="quiz__title">{getQuizTitle(this.quiz)}</h2>
+        <p className="quiz__questions-count">Question {this.state.questionId + 1}/{this.questionCount}</p>
         <div className="question__title language-javascript"
              dangerouslySetInnerHTML={{__html: this.getQuestionTitle(question)}}/>
         <form action="/validate/">
           {question.answers.map(function (option, i) {
             return (<div key={i}>
-              <input type="checkbox" className="question__input" id={'ans' + i}/>
+              <input type="checkbox" className="question__input" id={'ans' + i} onClick={this.check}/>
               <label className="question__answer" htmlFor={'ans' + i}>{option}</label>
             </div>);
-          })}
-
+          }, this)}
         </form>
 
         {button}
       </div>
-
-
     );
   }
 }

@@ -7,14 +7,14 @@ import {loadState, saveState} from '../localStorage/localStorage';
 import App from "../components/app/App";
 
 
-const persistedState = loadState();
+const persistedState = loadState('state');
 
 export const store = createStore(quizApp, persistedState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 
 store.subscribe(() => {
   saveState(
-    store.getState()
+    store.getState(),'state'
   );
 });
 

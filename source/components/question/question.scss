@@ -87,8 +87,12 @@
     text-align: center;
     line-height: 50px;
 
-    &:hover {
+    &:hover:enabled {
       background: $dark-blue-hover;
+    }
+
+    &:disabled{
+      opacity: 0.3;
     }
 
 

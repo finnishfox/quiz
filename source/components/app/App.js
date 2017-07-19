@@ -5,6 +5,7 @@ import Quizes from "../quizes/Quizes";
 import Result from "../result/Result";
 
 
+
 class App extends React.Component {
   render() {
     return (
