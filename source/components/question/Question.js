@@ -158,7 +158,7 @@ class Question extends React.Component {
 
   render() {
     if (this.redirectToResult) {
-      window.location.href = '/result';
+      window.location.hash = '/result';
       localStorage.removeItem('question');
       return null;
     }

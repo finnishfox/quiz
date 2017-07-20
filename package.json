@@ -4,7 +4,7 @@
   "description": "quiz app",
   "main": "gulpfile.js",
   "scripts": {
-    "build": "webpack --env=dev & webpack-dev-server --content-base ./dist --env dev --hot",
+    "build": "webpack --env=dev & webpack-dev-server  --env dev --hot",
     "build:prod": "webpack --env=prod & webpack-dev-server --content-base ./dist --env prod"
   },
   "repository": {

@@ -17,7 +17,7 @@ module.exports = merge(baseConfig,{
     contentBase: resolve(__dirname, './dist/'),
     port: 8080,
     host: '0.0.0.0',
-    historyApiFallback: true,
+    // historyApiFallback: true,
   }
 });
 
