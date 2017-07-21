@@ -1,15 +1,15 @@
-import {SET_QUIZ_ID, ADD_QUIZ, SET_RESULT} from '../actions/actionTypes';
+import { SET_QUIZ_ID, ADD_QUIZ, SET_RESULT } from '../actions/actionTypes';
 
 const initialState = {
   quizId: -1,
-  quizes: []
+  quizes: [],
 };
 
 export default function quizApp(state = initialState, action) {
   switch (action.type) {
     case SET_QUIZ_ID:
       return Object.assign({}, state, {
-        quizId: action.quizId
+        quizId: action.quizId,
       });
 
     case ADD_QUIZ:
@@ -18,11 +18,11 @@ export default function quizApp(state = initialState, action) {
           quizes: state.quizes.map((quiz) => {
             if (quiz.quizId === action.quizId) {
               return Object.assign({}, quiz, {
-                result: 0
-              })
+                result: 0,
+              });
             }
             return quiz;
-          })
+          }),
         });
       }
       return Object.assign({}, state, {
@@ -30,9 +30,9 @@ export default function quizApp(state = initialState, action) {
           ...state.quizes,
           {
             quizId: action.quizId,
-            result: action.result
-          }
-        ]
+            result: action.result,
+          },
+        ],
       });
 
     case SET_RESULT:
@@ -40,13 +40,13 @@ export default function quizApp(state = initialState, action) {
         quizes: state.quizes.map((quiz) => {
           if (quiz.quizId === action.quizId) {
             return Object.assign({}, quiz, {
-              result: action.result
-            })
+              result: action.result,
+            });
           }
           return quiz;
-        })
+        }),
       });
     default:
-      return state
+      return state;
   }
 }

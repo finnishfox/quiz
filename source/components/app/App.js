@@ -1,13 +1,13 @@
 import React from 'react';
-import {HashRouter, BrowserRouter, Switch, Route} from 'react-router-dom';
-import Question from "../question/Question";
-import Quizes from "../quizes/Quizes";
-import Result from "../result/Result";
+import { HashRouter, BrowserRouter, Switch, Route } from 'react-router-dom';
+import Question from '../question/Question';
+import Quizes from '../quizes/Quizes';
+import Result from '../result/Result';
 
 
 class App extends React.Component {
   render() {
-    let Router=BrowserRouter;
+    let Router = BrowserRouter;
     if (process.env.NODE_ENV === 'prod') {
       Router = HashRouter;
     } else {
@@ -16,9 +16,9 @@ class App extends React.Component {
     return (
       <Router>
         <Switch>
-          <Route exact path='/' component={Quizes}/>
-          <Route exact path='/quiz' component={Question}/>
-          <Route exact path='/result' component={Result}/>
+          <Route exact path="/" component={Quizes} />
+          <Route exact path="/quiz" component={Question} />
+          <Route exact path="/result" component={Result} />
         </Switch>
       </Router>
     );

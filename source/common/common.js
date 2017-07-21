@@ -17,6 +17,5 @@ export function getQuestionCount(quiz) {
 }
 
 export function countPercentResult(result, questionCount) {
-  return Math.round(result * 100
-    / questionCount);
+  return Math.round((result * 100) / questionCount);
 }
