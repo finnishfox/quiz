@@ -9,12 +9,17 @@ import App from "../components/app/App";
 
 const persistedState = loadState('state');
 
-export const store = createStore(quizApp, persistedState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+export let store;
 
+if (process.env.NODE_ENV === 'prod') {
+  store = createStore(quizApp, persistedState);
+} else {
+  store = createStore(quizApp, persistedState, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+}
 
 store.subscribe(() => {
   saveState(
-    store.getState(),'state'
+    store.getState(), 'state'
   );
 });
 
