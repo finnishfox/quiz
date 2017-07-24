@@ -32,13 +32,25 @@
     }
   }
 
+
+  &__icon{
+    float: left;
+    margin-right: 10px;
+  }
+
   &__title {
     font-family: $open-sans;
     font-size: 24px;
     color: $dark-blue;
     margin-bottom: 20px;
     display: inline-block;
-    margin-left: 10px;
+    line-height: 33px;
+    max-height: 66px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
   }
 
   &__questions-count {
@@ -53,6 +65,13 @@
     font-size: 14px;
     color: $dark-blue;
     letter-spacing: 0;
+    line-height: 19px;
+    max-height: 76px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
   }
 
   &__button {
