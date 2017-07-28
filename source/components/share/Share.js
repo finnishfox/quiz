@@ -11,14 +11,16 @@ class Share extends React.Component {
     const title = quiz.querySelector('.quiz__title').innerText;
     const progress = quiz.querySelector('.progress__value').innerText;
     const shareText = (`My result in ${title} quiz is ${progress}`);
+
     if (service === 'fb') {
-      window.open(`http://facebook.com/share.php?u=https://finnishfox.github.io/quiz/&title=${shareText}`);
+      window.open(`http://facebook.com/sharer/sharer.php?u=https://finnishfox.github.io/quiz/&quote=${shareText}`);
     } else if (service === 'twitter') {
-      window.open(`http://twitter.com/home?status=${shareText}+https://finnishfox.github.io/quiz/`);
+      window.open(`https://twitter.com/intent/tweet?url=https://finnishfox.github.io/quiz/&text=${encodeURIComponent(shareText)}`);
     } else if (service === 'vk') {
       window.open(`https://vk.com/share.php?url=https://finnishfox.github.io/quiz/&title=${shareText}`);
     }
   }
+
 
   render() {
     return (
